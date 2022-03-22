@@ -1,16 +1,20 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.1401
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32228.343
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Server", "Server\Server.vcxproj", "{D27954BB-6CB3-4C07-9C09-3D6781F0BC1B}"
 	ProjectSection(ProjectDependencies) = postProject
+		{63C35E29-05ED-41B2-BF51-09CA1FDC9B76} = {63C35E29-05ED-41B2-BF51-09CA1FDC9B76}
 		{E54B3344-CF55-45F4-969B-EC8A0CC93625} = {E54B3344-CF55-45F4-969B-EC8A0CC93625}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NetworkingUtil", "NetworkingUtil\NetworkingUtil.vcxproj", "{E54B3344-CF55-45F4-969B-EC8A0CC93625}"
+	ProjectSection(ProjectDependencies) = postProject
+		{63C35E29-05ED-41B2-BF51-09CA1FDC9B76} = {63C35E29-05ED-41B2-BF51-09CA1FDC9B76}
+	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PCH", "PCH\PCH.vcxproj", "{63C35E29-05ED-41B2-BF51-09CA1FDC9B76}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pch", "PCH\PCH.vcxproj", "{63C35E29-05ED-41B2-BF51-09CA1FDC9B76}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
