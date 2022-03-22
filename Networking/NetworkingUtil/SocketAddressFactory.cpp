@@ -1,6 +1,5 @@
-#include "pch.h"
 #include "SocketAddressFactory.h"
-
+#include "SocketAddress.h"
 
 std::shared_ptr<SocketAddress> SocketAddressFactory::createIPv4FromString(const std::string& ipString) {
 	sockaddr_in newAddr;
@@ -14,7 +13,7 @@ std::shared_ptr<SocketAddress> SocketAddressFactory::createIPv4FromString(const 
 	InetPton(AF_INET, "127.0.0.1", &newAddr.sin_addr);
 
 	// cast the sockaddr_in newAddr to sockaddr
-	auto socketAddress = std::make_shared<SocketAddress>((struct sockaddr *) newAddr);
+	auto socketAddress = std::make_shared<SocketAddress>((struct sockaddr*) &newAddr);
 
 	return socketAddress;
 }

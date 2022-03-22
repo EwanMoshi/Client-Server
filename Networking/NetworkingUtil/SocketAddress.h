@@ -1,5 +1,6 @@
 #pragma once
 
+
 class SocketAddress {
 public:
 	SocketAddress(uint32_t address, uint16_t port) {
@@ -15,6 +16,14 @@ public:
 
 	SocketAddress(const sockaddr& sockAddr) {
 		memcpy(&sockAddress, &sockAddr, sizeof(sockaddr));
+	}
+
+	sockaddr_in* GetAsSockAddrIn() {
+		return reinterpret_cast<sockaddr_in*>(&sockAddress);
+	}
+
+	const sockaddr_in* GetAsSockAddrIn() const { 
+		return reinterpret_cast<const sockaddr_in*>(&sockAddress);
 	}
 
 	size_t GetSize() const { return sizeof(sockaddr); }
