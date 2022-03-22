@@ -1,6 +1,8 @@
 #include "pch.h"
+#include "SocketAddressFactory.h"
 
-std::shared_ptr<SocketAddress> SocketAddressFactory::createIPv4FromString(const string& ipString) {
+
+std::shared_ptr<SocketAddress> SocketAddressFactory::createIPv4FromString(const std::string& ipString) {
 	sockaddr_in newAddr;
 
 	// use IPv4

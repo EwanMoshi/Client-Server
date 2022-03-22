@@ -1,4 +1,7 @@
 #pragma once
+
+class SocketAddress;
+
 class SocketAddressFactory
 {
 public:
