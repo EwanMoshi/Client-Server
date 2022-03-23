@@ -168,7 +168,6 @@
     <ClInclude Include="SocketAddress.h" />
     <ClInclude Include="SocketAddressFactory.h" />
     <ClInclude Include="SocketUtil.h" />
-    <ClInclude Include="StringUtils.h" />
     <ClInclude Include="UDPSocket.h" />
   </ItemGroup>
   <ItemGroup>

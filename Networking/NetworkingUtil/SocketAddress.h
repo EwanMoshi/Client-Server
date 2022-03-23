@@ -29,6 +29,8 @@ public:
 	size_t GetSize() const { return sizeof(sockaddr); }
 
 private:
+	friend class UDPSocket;
+
 	sockaddr sockAddress;
 
 	sockaddr_in* getAsSockAddrIn() {

@@ -1,7 +1,17 @@
 #include "pch.h"
-#include "SocketUtil.h"
+#include "UDPSocket.h"
 
-#define LOG( ... ) StringUtils::Log( __VA_ARGS__ );
+std::shared_ptr<UDPSocket> SocketUtil::CreateUDPSocket(SocketAddressFamily addressFamily) {
+	// address family will either be AF_INET (IPv4) or AF_INET6 (IPv6)
+	SOCKET sock = socket(addressFamily, SOCK_DGRAM, IPPROTO_UDP);
+
+	if (sock == INVALID_SOCKET) {
+		ReportError("SocketUtil::CreateUDPSocket: Failed to create socket");
+		return nullptr;
+	}
+
+	return std::shared_ptr<UDPSocket>(new UDPSocket(sock));
+}
 
 void SocketUtil::ReportError(const char* error)
 {
@@ -23,6 +33,15 @@ void SocketUtil::ReportError(const char* error)
 	LOG("Error %s: %d- %s", error, errorNum, lpMsgBuf);
 #else
 	LOG("Error: %hs", inOperationDesc);
+#endif
+}
+
+int SocketUtil::GetLastError()
+{
+#if _WIN32
+	return WSAGetLastError();
+#else
+	return errno;
 #endif
 }
 

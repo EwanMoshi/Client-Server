@@ -7,6 +7,7 @@ std::shared_ptr<SocketAddress> SocketAddressFactory::createIPv4FromString(const 
 
 	std::string host, port;
 
+	// extract ip and port parts of the string
 	if (pos != std::string::npos)
 	{
 		host = ipString.substr(0, pos);
@@ -20,6 +21,8 @@ std::shared_ptr<SocketAddress> SocketAddressFactory::createIPv4FromString(const 
 
 	addrinfo hint;
 	memset(&hint, 0, sizeof(hint));
+
+	// use IPv4
 	hint.ai_family = AF_INET;
 
 	addrinfo* result;
