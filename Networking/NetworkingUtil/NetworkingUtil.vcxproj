@@ -164,6 +164,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="NetworkBitStream.h" />
+    <ClInclude Include="NetworkManagerBase.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="SocketAddress.h" />
     <ClInclude Include="SocketAddressFactory.h" />
@@ -171,6 +173,8 @@
     <ClInclude Include="UDPSocket.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="NetworkBitStream.cpp" />
+    <ClCompile Include="NetworkManagerBase.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

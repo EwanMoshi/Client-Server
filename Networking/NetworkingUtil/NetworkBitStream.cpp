@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "NetworkBitStream.h"
 
 OutputBitStream::OutputBitStream() : bitHead(0), buffer(nullptr) {
@@ -90,7 +91,7 @@ InputBitStream::InputBitStream(const InputBitStream& other) : bitCapacity(other.
 	memcpy(buffer, other.buffer, byteCount);
 }
 
-~InputBitStream::InputBitStream() {
+InputBitStream::~InputBitStream() {
 	if (ownsBuffer) {
 		std::free(buffer);
 	}
