@@ -3,8 +3,7 @@
 #include "SocketAddress.h"
 #include "SocketUtil.h"
 
-UDPSocket::~UDPSocket()
-{
+UDPSocket::~UDPSocket() {
 #if _WIN32
 	closesocket(socket);
 #else
@@ -12,8 +11,7 @@ UDPSocket::~UDPSocket()
 #endif
 }
 
-int UDPSocket::Bind(const SocketAddress& addressToBind)
-{
+int UDPSocket::Bind(const SocketAddress& addressToBind) {
 	int result = bind(socket, &addressToBind.sockAddress, addressToBind.GetSize());
 	if (result == 0) {
 		return NO_ERROR;
@@ -23,8 +21,7 @@ int UDPSocket::Bind(const SocketAddress& addressToBind)
 	return SocketUtil::GetLastError();
 }
 
-int UDPSocket::SendTo(const void* bufferAddress, int length, const SocketAddress& addressTo)
-{
+int UDPSocket::SendTo(const void* bufferAddress, int length, const SocketAddress& addressTo) {
 	int bytesSent = sendto(socket, static_cast<const char*>(bufferAddress), length, 0, &addressTo.sockAddress, addressTo.GetSize());
 
 	if (bytesSent <= 0) {
@@ -35,8 +32,7 @@ int UDPSocket::SendTo(const void* bufferAddress, int length, const SocketAddress
 	return bytesSent;
 }
 
-int UDPSocket::ReceiveFrom(void* receiveBuffer, int maxLength, SocketAddress& addressFrom)
-{
+int UDPSocket::ReceiveFrom(void* receiveBuffer, int maxLength, SocketAddress& addressFrom) {
 	socklen_t fromLength = addressFrom.GetSize();
 
 	int bytesRead = recvfrom(socket, static_cast<char*>(receiveBuffer), maxLength, 0, &addressFrom.sockAddress, &fromLength);
@@ -60,8 +56,7 @@ int UDPSocket::ReceiveFrom(void* receiveBuffer, int maxLength, SocketAddress& ad
 	}
 }
 
-int UDPSocket::SetNonBlockingMode(bool enableNonBlockingMode)
-{
+int UDPSocket::SetNonBlockingMode(bool enableNonBlockingMode) {
 #if _WIN32
 	u_long arg = enableNonBlockingMode ? 1 : 0;
 	int result = ioctlsocket(socket, FIONBIO, &arg);
