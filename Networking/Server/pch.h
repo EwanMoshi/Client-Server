@@ -40,3 +40,4 @@ const int SOCKET_ERROR = -1;
 #include "UDPSocket.h"
 #include "SocketAddress.h"
 #include "SocketAddressFactory.h"
+#include "NetworkManagerBase.h"

@@ -4,11 +4,13 @@
 #include "UDPSocket.h"
 
 NetworkManagerBase::NetworkManagerBase() {
-
+	// temporarily here - calls WSAStartup
+	SocketUtil::init();
 }
 
 NetworkManagerBase::~NetworkManagerBase() {
-
+	// temporarily here - calls WSACleanup
+	SocketUtil::cleanUp();
 }
 
 bool NetworkManagerBase::init(uint16_t port) {
@@ -29,4 +31,13 @@ bool NetworkManagerBase::init(uint16_t port) {
 	}
 
 	return true;
+}
+
+void NetworkManagerBase::sendPacket(const OutputBitStream& outputStream, const SocketAddress& fromAddress)
+{
+	int sentByteCount = udpSocket->SendTo(outputStream.getBufferPtr(), outputStream.getByteLength(), fromAddress);
+
+	if (sentByteCount > 0) {
+		//
+	}
 }

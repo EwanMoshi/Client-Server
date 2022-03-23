@@ -59,6 +59,16 @@ void OutputBitStream::write(bool inData) {
 	writeBits(&inData, 1);
 }
 
+void OutputBitStream::write(const std::string& stringToWrite)
+{
+	uint32_t elementCount = static_cast<uint32_t>(stringToWrite.size());
+	write(elementCount);
+
+	for (const auto& element : stringToWrite) {
+		write(element);
+	}
+}
+
 void OutputBitStream::reallocBuffer(uint32_t newBitLength) {
 	if (buffer == nullptr) {
 		buffer = static_cast<char*>(std::malloc(newBitLength >> 3));

@@ -5,7 +5,7 @@ NetworkManagerServer* NetworkManagerServer::Instance = nullptr;
 
 NetworkManagerServer::NetworkManagerServer() { }
 
-bool NetworkManagerServer::init(uint16_t inPort) {
+bool NetworkManagerServer::staticInit(uint16_t inPort) {
 	if (Instance == nullptr) {
 		Instance = new NetworkManagerServer();
 

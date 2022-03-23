@@ -1,4 +1,5 @@
 #include "NetworkManagerClient.h"
+#include "NetworkBitStream.h"
 
 NetworkManagerClient* NetworkManagerClient::Instance = nullptr;
 
@@ -21,4 +22,25 @@ void NetworkManagerClient::init(const SocketAddress& serverAddress, const std::s
 	clientState = NCS_SayingHello;
 	// timeOfLastHello = 0.f;
 	this->name = name;
+}
+
+void NetworkManagerClient::sendOutgoingPacket() {
+	switch (clientState)
+	{
+		case NCS_SayingHello: {
+			OutputBitStream helloPacket;
+
+			helloPacket.write(helloMessage);
+			helloPacket.write(name);
+
+			sendPacket(helloPacket, serverAddress);
+
+			break;
+		}
+		case NCS_Welcomed: {
+			// send something else
+			int a = 5;
+			break;
+		}
+	}
 }

@@ -16,6 +16,8 @@ public:
 
 	static void	staticInit(const SocketAddress& serverAddress, const std::string& name);
 
+	void sendOutgoingPacket();
+
 private:
 	NetworkManagerClient();
 	void init(const SocketAddress& serverAddress, const std::string& name);

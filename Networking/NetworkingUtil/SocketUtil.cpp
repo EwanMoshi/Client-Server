@@ -1,6 +1,24 @@
 #include "pch.h"
 #include "UDPSocket.h"
 
+bool SocketUtil::init() {
+#if _WIN32
+	WSADATA wsaData;
+	int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+	if (iResult != NO_ERROR) {
+		ReportError("SocketUtil::init");
+		return false;
+	}
+#endif
+	return true;
+}
+
+void SocketUtil::cleanUp() {
+#if _WIN32
+	WSACleanup();
+#endif
+}
+
 std::shared_ptr<UDPSocket> SocketUtil::CreateUDPSocket(SocketAddressFamily addressFamily) {
 	// address family will either be AF_INET (IPv4) or AF_INET6 (IPv6)
 	SOCKET sock = socket(addressFamily, SOCK_DGRAM, IPPROTO_UDP);

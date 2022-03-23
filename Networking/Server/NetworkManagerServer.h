@@ -7,7 +7,7 @@ class NetworkManagerServer : public NetworkManagerBase {
 public:
 	static NetworkManagerServer* Instance;
 
-	static bool init(uint16_t port);
+	static bool staticInit(uint16_t port);
 
 private:
 	// constructor is private - create instance by calling static init function

@@ -18,6 +18,8 @@ class SocketUtil
 {
 public:	
 	static std::shared_ptr<UDPSocket> CreateUDPSocket(SocketAddressFamily addressFamily);
+	static bool init();
+	static void cleanUp();
 
 	static void ReportError(const char* error);
 	static int GetLastError();

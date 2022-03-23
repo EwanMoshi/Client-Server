@@ -190,6 +190,7 @@
   <ItemGroup>
     <ClInclude Include="NetworkManagerServer.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Server.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NetworkingUtil\NetworkingUtil.vcxproj">
