@@ -78,3 +78,52 @@ void OutputBitStream::reallocBuffer(uint32_t newBitLength) {
 
 	bitCapacity = newBitLength;
 }
+
+// InputBitStream Class ---------------------------------------
+
+InputBitStream::InputBitStream(char* newBuffer, uint32_t bitCount) : buffer(newBuffer), bitCapacity(bitCount), bitHead(0), ownsBuffer(false) {}
+
+InputBitStream::InputBitStream(const InputBitStream& other) : bitCapacity(other.bitCapacity), bitHead(other.bitHead), ownsBuffer(true) {
+	int byteCount = bitCapacity / 8;
+	buffer = static_cast<char*>(std::malloc(byteCount));
+
+	memcpy(buffer, other.buffer, byteCount);
+}
+
+~InputBitStream::InputBitStream() {
+	if (ownsBuffer) {
+		std::free(buffer);
+	}
+}
+
+void InputBitStream::readBits(void* data, uint32_t bitCount) {
+	uint8_t* destByte = reinterpret_cast<uint8_t*>(data);
+
+	while (bitCount > 8) {
+		readBits(*destByte, 8);
+		destByte++;
+		bitCount -= 8;
+	}
+
+	if (bitCount > 0) {
+		readBits(*destByte, bitCount);
+	}
+}
+
+void InputBitStream::readBits(uint8_t& data, uint32_t bitCount) {
+	uint32_t currentByteOffset = bitHead >> 3;
+	uint32_t currentBitOffset = bitHead & 0x7;
+
+	data = static_cast<uint8_t>(buffer[currentByteOffset]) >> currentBitOffset;
+
+	uint32_t bitsFreeInByte = 8 - currentBitOffset;
+	if (bitsFreeInByte < bitCount)
+	{
+		data |= static_cast<uint8_t>(buffer[currentByteOffset + 1]) << bitsFreeInByte;
+	}
+
+	// mask so that we only read the bit we need
+	data &= (~(0x00ff << bitCount));
+
+	bitHead += bitCount;
+}
