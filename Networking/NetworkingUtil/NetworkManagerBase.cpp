@@ -39,6 +39,7 @@ bool NetworkManagerBase::init(uint16_t port) {
 		return false;
 	}
 
+	std::cout << "NetworkManager::init: Socket bound at port " << ownAddress.getAsSockAddrIn()->sin_port << std::endl;
 	return true;
 }
 
@@ -93,6 +94,8 @@ void NetworkManagerBase::processQueuedPackets() {
 
 void NetworkManagerBase::sendPacket(const OutputBitStream& outputStream, const SocketAddress& fromAddress)
 {
+	std::cout << "NetworkManagerBase::sendPacket: Sending packet to address" << fromAddress.toString() << std::endl;
+
 	int sentByteCount = udpSocket->SendTo(outputStream.getBufferPtr(), outputStream.getByteLength(), fromAddress);
 
 	if (sentByteCount > 0) {
