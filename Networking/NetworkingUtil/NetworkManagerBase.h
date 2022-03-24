@@ -11,14 +11,40 @@ public:
 
 	bool init(uint16_t port);
 
+	void processIncomingPackets();
 	void sendPacket(const OutputBitStream& outputStream, const SocketAddress& fromAddress);
 
+	virtual void processPacket(InputBitStream& inputStream, const SocketAddress& fromAddress) = 0;
 
 	static const uint32_t helloMessage = 'HELO';
 	static const uint32_t welcomeMessage = 'WLCM';
 	static const uint32_t stateMessage = 'STAT';
 	static const uint32_t inputMessage = 'INPT';
+
 private:
+	class ReceivedPacket {
+	public:
+		ReceivedPacket(InputBitStream& inputMemoryBitStream, const SocketAddress& address);
+
+		const SocketAddress& getFromAddress() const {
+			return fromAddress;
+		}
+
+		InputBitStream& getPacketBuffer() { 
+			return packetBuffer;
+		}
+
+	private:
+		InputBitStream packetBuffer;
+		SocketAddress fromAddress;
+
+	};
+
+	void readIncomingPacketsIntoQueue();
+	void processQueuedPackets();
+
 	std::shared_ptr<class UDPSocket> udpSocket;
+
+	std::queue<ReceivedPacket, std::list<ReceivedPacket>> packetQueue;
 };
 

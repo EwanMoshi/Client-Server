@@ -25,6 +25,7 @@ const int WSAEWOULDBLOCK = EAGAIN;
 const int SOCKET_ERROR = -1;
 #endif
 
+#include <iostream>
 #include <memory>
 #include <vector>
 #include <string>
@@ -36,3 +37,5 @@ const int SOCKET_ERROR = -1;
 #include <unordered_set>
 #include <cstdint>
 #include "SocketUtil.h"
+#include "SocketAddressFactory.h"
+#include "SocketAddress.h"

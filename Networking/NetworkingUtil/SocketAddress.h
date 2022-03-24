@@ -25,6 +25,14 @@ public:
 		getAsSockAddrIn()->sin_port = 0;
 	}
 
+	bool operator==(const SocketAddress& other) const {
+		return (sockAddress.sa_family == AF_INET &&	getAsSockAddrIn()->sin_port == other.getAsSockAddrIn()->sin_port) && (getIP4Ref() == other.getIP4Ref());
+	}
+
+	size_t GetHash() const {
+		return (getIP4Ref()) | ((static_cast<uint32_t>(getAsSockAddrIn()->sin_port)) << 13) | sockAddress.sa_family;
+	}
+
 	sockaddr_in* getAsSockAddrIn() {
 		return reinterpret_cast<sockaddr_in*>(&sockAddress);
 	}
@@ -34,6 +42,7 @@ public:
 	}
 
 	size_t GetSize() const { return sizeof(sockaddr); }
+	std::string toString() const;
 
 private:
 	friend class UDPSocket;
@@ -57,3 +66,11 @@ private:
 	}
 #endif
 };
+
+namespace std {
+	template<> struct hash<SocketAddress> {
+		size_t operator()(const SocketAddress& address) const {
+			return address.GetHash();
+		}
+	};
+}

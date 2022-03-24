@@ -36,11 +36,8 @@ const int SOCKET_ERROR = -1;
 #include <unordered_map>
 #include <unordered_set>
 #include <cstdint>
-
 #include "SocketUtil.h"
-#include "UDPSocket.h"
-#include "SocketAddress.h"
 #include "SocketAddressFactory.h"
-#include "NetworkManagerBase.h"
-#include "NetworkManagerServer.h"
-#include "ClientProxy.h"
+#include "SocketAddress.h"
+#include "NetworkManagerClient.h"
+#include "NetworkBitStream.h"

@@ -1,8 +1,7 @@
 #pragma once
 
-#include <string>
+#include <string.h>
 #include "NetworkManagerBase.h"
-#include "SocketAddress.h"
 
 class NetworkManagerClient : public NetworkManagerBase {
 	enum NetworkClientState {
@@ -16,7 +15,10 @@ public:
 
 	static void	staticInit(const SocketAddress& serverAddress, const std::string& name);
 
-	void sendOutgoingPacket();
+	void sendOutgoingPackets();
+
+	void handleWelcomePacket(InputBitStream& inputStream);
+	virtual void processPacket(InputBitStream& inputStream, const SocketAddress& fromAddress) override;
 
 private:
 	NetworkManagerClient();
@@ -25,5 +27,6 @@ private:
 	SocketAddress serverAddress;
 	NetworkClientState clientState;
 	std::string name;
+	int playerId;
 };
 

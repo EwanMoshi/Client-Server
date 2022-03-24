@@ -57,8 +57,14 @@ public:
 		readBits(&data, bitCount);
 	}
 
+
+	void read(std::string& stringToRead);
+
 	void readBits(uint8_t& data, uint32_t bitCount);
 	void readBits(void* data, uint32_t bitCount);
+
+	void resetToCapacity(uint32_t byteCapacity);
+
 
 private:
 	char* buffer;

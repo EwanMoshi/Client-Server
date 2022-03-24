@@ -107,6 +107,16 @@ InputBitStream::~InputBitStream() {
 	}
 }
 
+void InputBitStream::read(std::string& stringToRead) {
+	uint32_t elementCount;
+	read(elementCount);
+	stringToRead.resize(elementCount);
+
+	for (auto& element : stringToRead) {
+		read(element);
+	}
+}
+
 void InputBitStream::readBits(void* data, uint32_t bitCount) {
 	uint8_t* destByte = reinterpret_cast<uint8_t*>(data);
 
@@ -137,4 +147,9 @@ void InputBitStream::readBits(uint8_t& data, uint32_t bitCount) {
 	data &= (~(0x00ff << bitCount));
 
 	bitHead += bitCount;
+}
+
+void InputBitStream::resetToCapacity(uint32_t byteCapacity) {
+	bitCapacity = byteCapacity << 3;
+	bitHead = 0;
 }

@@ -6,6 +6,7 @@ class UDPSocket;
 
 namespace StringUtils {
 	void Log(const char* inFormat, ...);
+	std::string Sprintf(const char* inFormat, ...);
 }
 
 enum SocketAddressFamily

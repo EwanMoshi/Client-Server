@@ -1,5 +1,5 @@
+#include "pch.h"
 #include "NetworkManagerClient.h"
-#include "NetworkBitStream.h"
 
 NetworkManagerClient* NetworkManagerClient::Instance = nullptr;
 
@@ -19,12 +19,24 @@ void NetworkManagerClient::init(const SocketAddress& serverAddress, const std::s
 	NetworkManagerBase::init(0);
 
 	this->serverAddress = serverAddress;
-	clientState = NCS_SayingHello;
-	// timeOfLastHello = 0.f;
 	this->name = name;
+	clientState = NCS_SayingHello;
 }
 
-void NetworkManagerClient::sendOutgoingPacket() {
+void NetworkManagerClient::processPacket(InputBitStream& inputStream, const SocketAddress& fromAddress) {
+	uint32_t packetType;
+	inputStream.read(packetType);
+
+	switch (packetType)	{
+	case welcomeMessage: {
+		handleWelcomePacket(inputStream);
+		break;
+	}
+	}
+}
+
+
+void NetworkManagerClient::sendOutgoingPackets() {
 	switch (clientState)
 	{
 		case NCS_SayingHello: {
@@ -32,6 +44,8 @@ void NetworkManagerClient::sendOutgoingPacket() {
 
 			helloPacket.write(helloMessage);
 			helloPacket.write(name);
+
+			std::cout << "sending hello packet" << std::endl;
 
 			sendPacket(helloPacket, serverAddress);
 
@@ -42,5 +56,19 @@ void NetworkManagerClient::sendOutgoingPacket() {
 			int a = 5;
 			break;
 		}
+	}
+}
+
+void NetworkManagerClient::handleWelcomePacket(InputBitStream& inputStream) {
+	if (clientState == NCS_SayingHello) {
+		// probably don't need this local variable
+		int playerId;
+		inputStream.read(playerId);
+
+		this->playerId = playerId;
+		clientState = NCS_Welcomed;
+
+		LOG("Client '%s' was welcomed as player %d", name.c_str(), this->playerId);
+		std::cout << "Client with name: " << name.c_str() << " welcomed by server as player with ID: " << this->playerId << std::endl;
 	}
 }
