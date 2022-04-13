@@ -4,6 +4,10 @@
 #include "NetworkBitStream.h"
 #include <memory>
 
+namespace Math {
+	float GetRandomFloat();
+}
+
 class NetworkManagerBase {
 public:
 	NetworkManagerBase();
@@ -20,6 +24,9 @@ public:
 	static const uint32_t welcomeMessage = 'WLCM';
 	static const uint32_t stateMessage = 'STAT';
 	static const uint32_t inputMessage = 'INPT';
+
+protected:
+	virtual float getPacketLossChance();
 
 private:
 	class ReceivedPacket {

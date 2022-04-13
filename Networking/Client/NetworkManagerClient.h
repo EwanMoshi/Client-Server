@@ -20,6 +20,9 @@ public:
 	void handleWelcomePacket(InputBitStream& inputStream);
 	virtual void processPacket(InputBitStream& inputStream, const SocketAddress& fromAddress) override;
 
+protected:
+	float getPacketLossChance() override;
+	
 private:
 	NetworkManagerClient();
 	void init(const SocketAddress& serverAddress, const std::string& name);
@@ -28,5 +31,8 @@ private:
 	NetworkClientState clientState;
 	std::string name;
 	int playerId;
+
+	// this is temp to stop spamming the server with hello packets
+	bool helloPacketSent;
 };
 

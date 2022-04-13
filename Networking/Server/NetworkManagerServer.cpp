@@ -19,7 +19,7 @@ bool NetworkManagerServer::staticInit(uint16_t inPort) {
 void NetworkManagerServer::processPacket(InputBitStream& inputStream, const SocketAddress& fromAddress) {
 	auto pair = addressToClient.find(fromAddress);
 	if (pair == addressToClient.end()) {
-		std::cout << "NetworkManagerServer::processPacket: packet from new client using socket address: %s" << fromAddress.toString().c_str() << std::endl;
+		std::cout << "[NetworkManagerServer::processPacket]: packet from new client using socket address: %s" << fromAddress.toString().c_str() << std::endl;
 
 		handlePacketFromNewClient(inputStream, fromAddress);
 	}
@@ -39,7 +39,7 @@ void NetworkManagerServer::processPacket(std::shared_ptr<ClientProxy> clientProx
 		break;
 	}
 	default: {
-		LOG("NetworkManagerServer::processPacket: Unknown packet type received from socket address %s", clientProxy->getSocketAddress().toString().c_str());
+		LOG("[NetworkManagerServer::processPacket]: Unknown packet type received from socket address %s", clientProxy->getSocketAddress().toString().c_str());
 		break;
 	}
 	}
@@ -51,8 +51,8 @@ void NetworkManagerServer::sendWelcomePacket(std::shared_ptr<ClientProxy> client
 	welcomePacket.write(welcomeMessage);
 	welcomePacket.write(clientProxy->getPlayerId());
 
-	LOG("NetworkManagerServer::sendWelcomePacket: New client '%s' as player %d", clientProxy->getName().c_str(), clientProxy->getPlayerId());
-	std::cout << "NetworkManagerServer::sendWelcomePacket: New client " << clientProxy->getName().c_str() << " as player " << clientProxy->getPlayerId() << std::endl;
+	LOG("[NetworkManagerServer::sendWelcomePacket]: New client '%s' as player %d", clientProxy->getName().c_str(), clientProxy->getPlayerId());
+	std::cout << "[NetworkManagerServer::sendWelcomePacket]: New client " << clientProxy->getName().c_str() << " as player " << clientProxy->getPlayerId() << std::endl;
 
 	sendPacket(welcomePacket, clientProxy->getSocketAddress());
 }
@@ -76,7 +76,7 @@ void NetworkManagerServer::handlePacketFromNewClient(InputBitStream& inputStream
 		// TODO: init replication manager
 	}
 	else {
-		LOG("NetworkManagerServer::handlePacketFromNewClient: Received packet from new client that isn't hello from socket address %s", fromAddress.toString().c_str());
+		LOG("[NetworkManagerServer::handlePacketFromNewClient]: Received packet from new client that isn't hello from socket address %s", fromAddress.toString().c_str());
 	}
 }
 

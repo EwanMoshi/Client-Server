@@ -3,6 +3,15 @@
 #include "SocketAddress.h"
 #include "UDPSocket.h"
 
+
+float Math::GetRandomFloat() {
+	static std::random_device randomDevice;
+	static std::mt19937 gen(randomDevice());
+	static std::uniform_real_distribution<float> dist(0.0f, 1.0f);
+	return dist(gen);
+}
+
+
 NetworkManagerBase::ReceivedPacket::ReceivedPacket(InputBitStream& inputBitStream, const SocketAddress& fromAddress) :
 	fromAddress(fromAddress),
 	packetBuffer(inputBitStream)
@@ -27,8 +36,8 @@ bool NetworkManagerBase::init(uint16_t port) {
 	udpSocket = SocketUtil::CreateUDPSocket(INET);
 	udpSocket->Bind(ownAddress);
 
-	LOG("NetworkManager::init: binding socket at port %d", port);
-	std::cout << "NetworkManager::init: binding socket at port " <<  port << std::endl;
+	LOG("[NetworkManager::init]: binding socket at port %d", port);
+	std::cout << "[NetworkManager::init]: binding socket at port " <<  port << std::endl;
 
 	if (udpSocket == nullptr) {
 		return false;
@@ -39,7 +48,7 @@ bool NetworkManagerBase::init(uint16_t port) {
 		return false;
 	}
 
-	std::cout << "NetworkManager::init: Socket bound at port " << ownAddress.getAsSockAddrIn()->sin_port << std::endl;
+	//std::cout << "NetworkManager::init: Socket bound at port " << ownAddress.toString().c_str() << std::endl;
 	return true;
 }
 
@@ -78,7 +87,12 @@ void NetworkManagerBase::readIncomingPacketsIntoQueue() {
 			totalReadByteCount += readByteCount;
 			
 			// Note: can simulate lag/packet loss here by not inserting into queue
-			packetQueue.emplace(inputStream, fromAddress);
+			if (Math::GetRandomFloat() >= getPacketLossChance()) {
+				packetQueue.emplace(inputStream, fromAddress);
+			}
+			else {
+				std::cout << "[NetworkManagerBase::readIncomingPacketsIntoQueue]: Simulating packet loss - Dropping packet " << std::endl;
+			}
 		}
 	}
 }
@@ -101,4 +115,8 @@ void NetworkManagerBase::sendPacket(const OutputBitStream& outputStream, const S
 	if (sentByteCount > 0) {
 		
 	}
+}
+
+float NetworkManagerBase::getPacketLossChance() {
+	return 0.0f;
 }

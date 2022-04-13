@@ -27,6 +27,7 @@ const int SOCKET_ERROR = -1;
 
 #include <iostream>
 #include <memory>
+#include <random>
 #include <vector>
 #include <string>
 #include <list>

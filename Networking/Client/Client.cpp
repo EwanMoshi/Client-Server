@@ -17,7 +17,7 @@ Client::Client() {
 	std::shared_ptr<SocketAddress> serverAddress = SocketAddressFactory::createIPv4FromString("127.0.0.1:8989");
 
 	// name should be unique
-	NetworkManagerClient::staticInit(*serverAddress, "client");
+	NetworkManagerClient::staticInit(*serverAddress, "e_moshi");
 }
 	
 int Client::mainGameLoop() {

@@ -3,7 +3,7 @@
 
 NetworkManagerClient* NetworkManagerClient::Instance = nullptr;
 
-NetworkManagerClient::NetworkManagerClient() : clientState(NCS_Uninitialized) { }
+NetworkManagerClient::NetworkManagerClient() : clientState(NCS_Uninitialized), helloPacketSent(false) { }
 
 void NetworkManagerClient::staticInit(const SocketAddress& serverAddress, const std::string& name) {
 	if (Instance == nullptr) {
@@ -35,19 +35,21 @@ void NetworkManagerClient::processPacket(InputBitStream& inputStream, const Sock
 	}
 }
 
-
 void NetworkManagerClient::sendOutgoingPackets() {
 	switch (clientState)
 	{
 		case NCS_SayingHello: {
-			OutputBitStream helloPacket;
 
-			helloPacket.write(helloMessage);
-			helloPacket.write(name);
+			if (!helloPacketSent) {
+				OutputBitStream helloPacket;
 
-			std::cout << "sending hello packet" << std::endl;
+				helloPacket.write(helloMessage);
+				helloPacket.write(name);
 
-			sendPacket(helloPacket, serverAddress);
+				std::cout << "sending hello packet" << std::endl;
+				sendPacket(helloPacket, serverAddress);
+				helloPacketSent = true;
+			}
 
 			break;
 		}
@@ -71,4 +73,8 @@ void NetworkManagerClient::handleWelcomePacket(InputBitStream& inputStream) {
 		LOG("Client '%s' was welcomed as player %d", name.c_str(), this->playerId);
 		std::cout << "Client with name: " << name.c_str() << " welcomed by server as player with ID: " << this->playerId << std::endl;
 	}
+}
+
+float NetworkManagerClient::getPacketLossChance() {
+	return 0.9f;
 }
