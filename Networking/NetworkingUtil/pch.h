@@ -40,3 +40,7 @@ const int SOCKET_ERROR = -1;
 #include "SocketUtil.h"
 #include "SocketAddressFactory.h"
 #include "SocketAddress.h"
+#include "Timing.h"
+#include "NetworkBitStream.h"
+#include "InFlightPacket.h"
+#include "AckRange.h"
