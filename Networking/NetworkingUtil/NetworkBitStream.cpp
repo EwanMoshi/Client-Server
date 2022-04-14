@@ -55,8 +55,8 @@ void OutputBitStream::writeBits(uint8_t data, uint32_t bitCount) {
 	bitHead = nextBitHead;
 }
 
-void OutputBitStream::write(bool inData) {
-	writeBits(&inData, 1);
+void OutputBitStream::write(bool boolToWrite) {
+	writeBits(&boolToWrite, 1);
 }
 
 void OutputBitStream::write(const std::string& stringToWrite)
@@ -115,6 +115,10 @@ void InputBitStream::read(std::string& stringToRead) {
 	for (auto& element : stringToRead) {
 		read(element);
 	}
+}
+
+void InputBitStream::read(bool& boolToRead) {
+	readBits(&boolToRead, 1);
 }
 
 void InputBitStream::readBits(void* data, uint32_t bitCount) {

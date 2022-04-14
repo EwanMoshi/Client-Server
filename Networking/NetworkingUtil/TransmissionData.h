@@ -1,9 +1,9 @@
 #pragma once
 
-class DeliveryNotificationManager;
+class PacketDeliveryNotificationManager;
 
 class TransmissionData {
 public:
-	virtual void handleDeliverySuccess(DeliveryNotificationManager* deliveryNotificationManager) const = 0;
-	virtual void handleDeliveryFailure(DeliveryNotificationManager* deliveryNotificationManager) const = 0;
+	virtual void handleDeliverySuccess(PacketDeliveryNotificationManager* deliveryNotificationManager) const = 0;
+	virtual void handleDeliveryFailure(PacketDeliveryNotificationManager* deliveryNotificationManager) const = 0;
 };

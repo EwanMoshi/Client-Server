@@ -44,7 +44,6 @@ private:
 	private:
 		InputBitStream packetBuffer;
 		SocketAddress fromAddress;
-
 	};
 
 	void readIncomingPacketsIntoQueue();

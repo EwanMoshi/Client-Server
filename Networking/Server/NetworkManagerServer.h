@@ -16,6 +16,11 @@ public:
 
 	virtual void processPacket(InputBitStream& inputStream, const SocketAddress& fromAddress) override;
 
+	void sendWelcomePacket(std::shared_ptr<ClientProxy> clientProxy);
+
+	// TEMP: This is just here to test resending welcome packet
+	void processTimedOutPackets();
+
 	std::shared_ptr<ClientProxy> getClientProxy(int playerId);
 
 private:
@@ -24,7 +29,6 @@ private:
 
 	void processPacket(std::shared_ptr<ClientProxy> clientProxy, InputBitStream& inputStream);
 	void handlePacketFromNewClient(InputBitStream& inputStream, const SocketAddress& fromAddress);
-	void sendWelcomePacket(std::shared_ptr<ClientProxy> clientProxy);
 
 	std::unordered_map<int, std::shared_ptr<ClientProxy>> playerIdToClient;
 	std::unordered_map<SocketAddress, std::shared_ptr<ClientProxy>> addressToClient;

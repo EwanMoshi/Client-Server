@@ -88,6 +88,7 @@ void NetworkManagerBase::readIncomingPacketsIntoQueue() {
 			
 			// Note: can simulate lag/packet loss here by not inserting into queue
 			if (Math::GetRandomFloat() >= getPacketLossChance()) {
+				std::cout << "[NetworkManagerBase::readIncomingPacketsIntoQueue]: Placing packet into packet queue" << std::endl;
 				packetQueue.emplace(inputStream, fromAddress);
 			}
 			else {
@@ -108,7 +109,7 @@ void NetworkManagerBase::processQueuedPackets() {
 
 void NetworkManagerBase::sendPacket(const OutputBitStream& outputStream, const SocketAddress& fromAddress)
 {
-	std::cout << "NetworkManagerBase::sendPacket: Sending packet to address" << fromAddress.toString() << std::endl;
+	std::cout << "[NetworkManagerBase::sendPacket]: Sending packet to address" << fromAddress.toString() << std::endl;
 
 	int sentByteCount = udpSocket->SendTo(outputStream.getBufferPtr(), outputStream.getByteLength(), fromAddress);
 

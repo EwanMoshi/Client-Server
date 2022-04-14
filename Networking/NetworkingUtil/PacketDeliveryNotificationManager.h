@@ -14,6 +14,9 @@ public:
 
 	void processTimedOutPackets();
 
+	InFlightPacket* writeWelcomePacket(OutputBitStream& outputStream);
+	bool readAndProcessWelcomePacket(InputBitStream& inputStream);
+
 private:
 	void handlePacketDeliverySuccess(const InFlightPacket& inFlightPacket);
 	void handlePacketDeliveryFailure(const InFlightPacket& inFlightPacket);
@@ -33,5 +36,5 @@ private:
 	std::deque<InFlightPacket> inFlightPackets;
 	std::deque<AckRange> pendingAckRanges;
 
-	const float packetAckTimeoutDelay = 0.3f;
+	const float packetAckTimeoutDelay = 3.0f;
 };

@@ -24,15 +24,39 @@ void PacketDeliveryNotificationManager::processTimedOutPackets() {
 }
 
 void PacketDeliveryNotificationManager::handlePacketDeliverySuccess(const InFlightPacket& inFlightPacket) {
+	std::cout << "[PacketDeliveryNotificationManager::handlePacketDeliveryFailure]: Packet with sequence number " << inFlightPacket.getSequenceNubmer() << " successfully sent" << std::endl;
+
 	inFlightPacket.handleDeliverySuccess(this);
 
 	// can incremenet a counter here to keep track of sent packets
 }
 
 void PacketDeliveryNotificationManager::handlePacketDeliveryFailure(const InFlightPacket& inFlightPacket) {
+	std::cout << "[PacketDeliveryNotificationManager::handlePacketDeliveryFailure]: Packet with sequence number " << inFlightPacket.getSequenceNubmer() << " detected as dropped" << std::endl;
+
 	inFlightPacket.handleDeliveryFailure(this);
 
 	// can incremenet a counter here to keep track of dropped packets
+}
+
+bool PacketDeliveryNotificationManager::readAndProcessWelcomePacket(InputBitStream& inputStream) {
+	bool shouldProcessPacket = processSequenceNumber(inputStream);
+
+	if (shouldProcessAcks) {
+		processAcks(inputStream);
+	}
+
+	return shouldProcessPacket;
+}
+
+InFlightPacket* PacketDeliveryNotificationManager::writeWelcomePacket(OutputBitStream& outputStream) {
+	InFlightPacket* newInFlightPacket = writeSequenceNumber(outputStream);
+
+	if (shouldSendAcks) {
+		writeAckData(outputStream);
+	}
+
+	return newInFlightPacket;
 }
 
 InFlightPacket* PacketDeliveryNotificationManager::writeSequenceNumber(OutputBitStream& outputStream) {
@@ -40,6 +64,10 @@ InFlightPacket* PacketDeliveryNotificationManager::writeSequenceNumber(OutputBit
 	PacketSequenceNumber currentSequenceNumber = nextSequenceNumber++;
 
 	outputStream.write(currentSequenceNumber);
+
+	std::cout << " -------    WRITING seqNumber " << currentSequenceNumber << std::endl;
+
+	std::cout << "[PacketDeliveryNotificationManager::writeSequenceNumber]: Writing sequence number " << currentSequenceNumber << " into the packet" << std::endl;
 
 	if (shouldProcessAcks) {
 		// Note: This constructs the InFlightPacket object with the currentSequenceNumber
@@ -55,13 +83,19 @@ bool PacketDeliveryNotificationManager::processSequenceNumber(InputBitStream& in
 	PacketSequenceNumber sequenceNumber;
 
 	inputStream.read(sequenceNumber);
+	std::cout << " -------    READING  seqNumber " << sequenceNumber << std::endl;
+
+	std::cout << "[PacketDeliveryNotificationManager::processSequenceNumber]: Reading sequence number " << sequenceNumber << " from the packet" << std::endl;
 
 	// this handles the case when sequence number is == expected and when it's > expected
 	// Note: if the sequenceNumber is > than what we expected, it means we missed some packets
 	if (sequenceNumber >= nextExpectedSequenceNumber) {
 		nextExpectedSequenceNumber = sequenceNumber + 1;
 
+		std::cout << "[PacketDeliveryNotificationManager::processSequenceNumber]: Next expected sequence number is " << nextExpectedSequenceNumber << std::endl;
+		
 		if (shouldSendAcks) {
+			std::cout << "[PacketDeliveryNotificationManager::processSequenceNumber]: adding pending ack into pendingAckRanges" << std::endl;
 			addPendingAck(sequenceNumber);
 		}
 
@@ -70,6 +104,7 @@ bool PacketDeliveryNotificationManager::processSequenceNumber(InputBitStream& in
 	else if (sequenceNumber < nextExpectedSequenceNumber) {
 		// silently drop old packets 
 		// NOTE: wrapping around the PacketSequenceNumber can trigger this
+		std::cout << "[PacketDeliveryNotificationManager::processSequenceNumber]: sequence number " << sequenceNumber << " is < " << nextExpectedSequenceNumber << ". Silently dropping old packet" << std::endl;
 		return false;
 	}
 
@@ -81,9 +116,20 @@ void PacketDeliveryNotificationManager::writeAckData(OutputBitStream& outputStre
 
 	outputStream.write(hasAcks);
 
+	std::cout << " -------    WRITING hasAcks " << hasAcks << std::endl;
+
 	if (hasAcks) {
-		pendingAckRanges.front().write(outputStream);
+		auto ackRange = pendingAckRanges.front();
+		ackRange.write(outputStream);
+
+		auto rangeTo = ackRange.getStart() + ackRange.getCount();
+		std::cout << "[PacketDeliveryNotificationManager::writeAckData]: Writing AckRange " << ackRange.getStart() << " to " << rangeTo << std::endl;
+
+
 		pendingAckRanges.pop_front();
+	}
+	else {
+		std::cout << "[PacketDeliveryNotificationManager::writeAckData]: pendingAckRanges is empty. Not writing any AckRange into packet. " << std::endl;
 	}
 }
 
@@ -91,11 +137,18 @@ void PacketDeliveryNotificationManager::processAcks(InputBitStream& inputStream)
 	bool hasAcks;
 
 	inputStream.read(hasAcks);
+	std::cout << " -------    READING  hasAcks " << hasAcks << std::endl;
 
 	// if the incoming packet has acks
 	if (hasAcks) {
+		std::cout << "[PacketDeliveryNotificationManager::processAcks]: Ack found in packet" << std::endl;
+
 		AckRange ackRange;
 		ackRange.read(inputStream);
+
+		std::cout << "[PacketDeliveryNotificationManager::processAcks]: Ack start " << ackRange.getStart() << std::endl;
+		std::cout << "[PacketDeliveryNotificationManager::processAcks]: Ack end " << ackRange.getStart() + ackRange.getCount() << std::endl;
+
 
 		PacketSequenceNumber nextAckdSequenceNumber = ackRange.getStart();
 		uint32_t onePastAckdSequenceNumber = nextAckdSequenceNumber + ackRange.getCount();
@@ -120,7 +173,9 @@ void PacketDeliveryNotificationManager::processAcks(InputBitStream& inputStream)
 				nextAckdSequenceNumber++;
 			}
 		}
-
+	}
+	else {
+		std::cout << "[PacketDeliveryNotificationManager::processAcks]: Ack not found in packet" << std::endl;
 	}
 }
 

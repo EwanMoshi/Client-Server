@@ -1,5 +1,7 @@
 #pragma once
 
+#include "PacketDeliveryNotificationManager.h"
+
 class ClientProxy {
 public:
 	ClientProxy(const SocketAddress& socketAddress, const std::string& name, int playerId);
@@ -16,7 +18,10 @@ public:
 		return name; 
 	}
 
+	PacketDeliveryNotificationManager& getPacketDeliveryNotificationManager();
+
 private:
+	PacketDeliveryNotificationManager packetDeliveryNotificationManager;
 	SocketAddress socketAddress;
 	std::string name;
 	int playerId;

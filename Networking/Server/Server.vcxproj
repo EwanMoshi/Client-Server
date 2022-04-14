@@ -181,6 +181,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
     </ClCompile>
+    <ClCompile Include="ReliableWelcomeTransmissionData.cpp" />
     <ClCompile Include="Server.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">pch.h</PrecompiledHeaderFile>
@@ -192,6 +193,7 @@
     <ClInclude Include="ClientProxy.h" />
     <ClInclude Include="NetworkManagerServer.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="ReliableWelcomeTransmissionData.h" />
     <ClInclude Include="Server.h" />
   </ItemGroup>
   <ItemGroup>

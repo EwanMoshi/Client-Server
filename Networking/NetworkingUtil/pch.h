@@ -44,3 +44,4 @@ const int SOCKET_ERROR = -1;
 #include "NetworkBitStream.h"
 #include "InFlightPacket.h"
 #include "AckRange.h"
+#include "TransmissionData.h"

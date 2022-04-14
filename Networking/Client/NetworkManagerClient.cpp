@@ -3,7 +3,11 @@
 
 NetworkManagerClient* NetworkManagerClient::Instance = nullptr;
 
-NetworkManagerClient::NetworkManagerClient() : clientState(NCS_Uninitialized), helloPacketSent(false) { }
+NetworkManagerClient::NetworkManagerClient() :
+	clientState(NCS_Uninitialized),
+	helloPacketSent(false),
+	packetDeliveryNotificationManager(true, false) // client needs to send acks but not process them
+{ }
 
 void NetworkManagerClient::staticInit(const SocketAddress& serverAddress, const std::string& name) {
 	if (Instance == nullptr) {
@@ -29,7 +33,9 @@ void NetworkManagerClient::processPacket(InputBitStream& inputStream, const Sock
 
 	switch (packetType)	{
 	case welcomeMessage: {
-		handleWelcomePacket(inputStream);
+		if (packetDeliveryNotificationManager.readAndProcessWelcomePacket(inputStream)) {
+			handleWelcomePacket(inputStream);
+		}
 		break;
 	}
 	}
@@ -45,6 +51,8 @@ void NetworkManagerClient::sendOutgoingPackets() {
 
 				helloPacket.write(helloMessage);
 				helloPacket.write(name);
+
+				packetDeliveryNotificationManager.writeWelcomePacket(helloPacket);
 
 				std::cout << "sending hello packet" << std::endl;
 				sendPacket(helloPacket, serverAddress);
@@ -72,9 +80,18 @@ void NetworkManagerClient::handleWelcomePacket(InputBitStream& inputStream) {
 
 		LOG("Client '%s' was welcomed as player %d", name.c_str(), this->playerId);
 		std::cout << "Client with name: " << name.c_str() << " welcomed by server as player with ID: " << this->playerId << std::endl;
+
+		OutputBitStream ackPacket;
+		ackPacket.write(helloMessage);
+
+		std::cout << " -------    WRITING  " << helloMessage << std::endl;
+
+		packetDeliveryNotificationManager.writeWelcomePacket(ackPacket);
+		sendPacket(ackPacket, serverAddress);
+		std::cout << "DEBUG OUTPUT ackPacket " << ackPacket.getBufferPtr() << std::endl;
 	}
 }
 
 float NetworkManagerClient::getPacketLossChance() {
-	return 0.9f;
+	return 0.2f;
 }

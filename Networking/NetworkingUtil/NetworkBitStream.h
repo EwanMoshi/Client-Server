@@ -19,7 +19,7 @@ public:
 
 	// a bool version of write so that we can pass 1 bit as the bitCount
 	// Note: Using template version above would result in 8 bits being used for a bool
-	void write(bool inData);
+	void write(bool boolToWrite);
 	void write(const std::string& stringToWrite);
 
 	void writeBits(uint8_t data, uint32_t bitCount);
@@ -59,6 +59,7 @@ public:
 
 
 	void read(std::string& stringToRead);
+	void read(bool& boolToRead);
 
 	void readBits(uint8_t& data, uint32_t bitCount);
 	void readBits(void* data, uint32_t bitCount);

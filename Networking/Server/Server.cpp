@@ -26,12 +26,17 @@ bool Server::initNetworkManager() {
 
 int Server::run() {
 	while (true) {
+		Timing::instance.Update();
+
 		// TODO: turn this into a getInstance function that initializes the Instance if it's nullptr
 		NetworkManagerServer::Instance->processIncomingPackets();
 
 		// NetworkManagerServer::Instance->checkForDisconnects();
 
 		// NetworkManagerServer::Instance->sendOutgoingPackets();
+
+		// temp for testing
+		NetworkManagerServer::Instance->processTimedOutPackets();
 	}
 
 	return 0;

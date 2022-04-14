@@ -2,6 +2,7 @@
 
 #include <string.h>
 #include "NetworkManagerBase.h"
+#include "PacketDeliveryNotificationManager.h"
 
 class NetworkManagerClient : public NetworkManagerBase {
 	enum NetworkClientState {
@@ -26,6 +27,8 @@ protected:
 private:
 	NetworkManagerClient();
 	void init(const SocketAddress& serverAddress, const std::string& name);
+
+	PacketDeliveryNotificationManager packetDeliveryNotificationManager;
 
 	SocketAddress serverAddress;
 	NetworkClientState clientState;
