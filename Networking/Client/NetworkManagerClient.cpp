@@ -52,7 +52,7 @@ void NetworkManagerClient::sendOutgoingPackets() {
 				helloPacket.write(helloMessage);
 				helloPacket.write(name);
 
-				packetDeliveryNotificationManager.writeWelcomePacket(helloPacket);
+				//packetDeliveryNotificationManager.writeWelcomePacket(helloPacket);
 
 				std::cout << "sending hello packet" << std::endl;
 				sendPacket(helloPacket, serverAddress);
@@ -93,5 +93,5 @@ void NetworkManagerClient::handleWelcomePacket(InputBitStream& inputStream) {
 }
 
 float NetworkManagerClient::getPacketLossChance() {
-	return 0.2f;
+	return 0.8f;
 }
