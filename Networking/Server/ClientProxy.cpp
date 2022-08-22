@@ -10,6 +10,11 @@ ClientProxy::ClientProxy(const SocketAddress& socketAddress, const std::string& 
 	
 }
 
+ReplicationManagerServer& ClientProxy::getReplicationManagerServer()
+{
+	return replicationManagerServer;
+}
+
 PacketDeliveryNotificationManager& ClientProxy::getPacketDeliveryNotificationManager() {
 	return packetDeliveryNotificationManager;
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "PacketDeliveryNotificationManager.h"
+#include "ReplicationManagerServer.h"
 
 class ClientProxy {
 public:
@@ -18,9 +19,11 @@ public:
 		return name; 
 	}
 
+	ReplicationManagerServer& getReplicationManagerServer();
 	PacketDeliveryNotificationManager& getPacketDeliveryNotificationManager();
 
 private:
+	ReplicationManagerServer replicationManagerServer;
 	PacketDeliveryNotificationManager packetDeliveryNotificationManager;
 	SocketAddress socketAddress;
 	std::string name;

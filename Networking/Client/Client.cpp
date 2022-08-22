@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Client.h"
+#include "ClientCharacter.h"
 
 Client* Client::Instance = nullptr;
 
@@ -12,6 +13,8 @@ bool Client::staticInit() {
 }
 
 Client::Client() {
+	GameObjectRegistry::instance->registerCreationFunction('CHAR', ClientCharacter::staticCreate);
+
 	SocketUtil::init();
 
 	std::shared_ptr<SocketAddress> serverAddress = SocketAddressFactory::createIPv4FromString("127.0.0.1:8989");

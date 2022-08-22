@@ -45,3 +45,6 @@ const int SOCKET_ERROR = -1;
 #include "InFlightPacket.h"
 #include "AckRange.h"
 #include "TransmissionData.h"
+#include "GameObjectRegistry.h"
+#include "GameObject.h"
+#include "BaseCharacter.h"

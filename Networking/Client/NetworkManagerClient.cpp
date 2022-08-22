@@ -33,9 +33,10 @@ void NetworkManagerClient::processPacket(InputBitStream& inputStream, const Sock
 
 	switch (packetType)	{
 	case welcomeMessage: {
-		if (packetDeliveryNotificationManager.readAndProcessWelcomePacket(inputStream)) {
-			handleWelcomePacket(inputStream);
-		}
+		//if (packetDeliveryNotificationManager.readAndProcessWelcomePacket(inputStream)) {
+		//	handleWelcomePacket(inputStream);
+		//}
+		handleWelcomePacket(inputStream);
 		break;
 	}
 	}
@@ -81,17 +82,17 @@ void NetworkManagerClient::handleWelcomePacket(InputBitStream& inputStream) {
 		LOG("Client '%s' was welcomed as player %d", name.c_str(), this->playerId);
 		std::cout << "Client with name: " << name.c_str() << " welcomed by server as player with ID: " << this->playerId << std::endl;
 
-		OutputBitStream ackPacket;
+		/*OutputBitStream ackPacket;
 		ackPacket.write(helloMessage);
 
 		std::cout << " -------    WRITING  " << helloMessage << std::endl;
 
 		packetDeliveryNotificationManager.writeWelcomePacket(ackPacket);
 		sendPacket(ackPacket, serverAddress);
-		std::cout << "DEBUG OUTPUT ackPacket " << ackPacket.getBufferPtr() << std::endl;
+		std::cout << "DEBUG OUTPUT ackPacket " << ackPacket.getBufferPtr() << std::endl;*/
 	}
 }
 
 float NetworkManagerClient::getPacketLossChance() {
-	return 0.8f;
+	return 0.0f;
 }

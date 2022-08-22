@@ -86,8 +86,11 @@ void NetworkManagerBase::readIncomingPacketsIntoQueue() {
 			receivedPackedCount++;
 			totalReadByteCount += readByteCount;
 			
+			auto randFloat = Math::GetRandomFloat();
+			std::cout << randFloat << std::endl;
+
 			// Note: can simulate lag/packet loss here by not inserting into queue
-			if (Math::GetRandomFloat() >= getPacketLossChance()) {
+			if (randFloat >= getPacketLossChance()) {
 				std::cout << "[NetworkManagerBase::readIncomingPacketsIntoQueue]: Placing packet into packet queue" << std::endl;
 				packetQueue.emplace(inputStream, fromAddress);
 			}

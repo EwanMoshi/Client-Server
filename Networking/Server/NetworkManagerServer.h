@@ -23,6 +23,9 @@ public:
 
 	std::shared_ptr<ClientProxy> getClientProxy(int playerId);
 
+	void registerGameObject(std::shared_ptr<GameObject> gameObject);
+	inline std::shared_ptr<GameObject> registerAndReturn(GameObject* gameObject);
+
 private:
 	// constructor is private - create instance by calling static init function
 	NetworkManagerServer();
@@ -30,9 +33,17 @@ private:
 	void processPacket(std::shared_ptr<ClientProxy> clientProxy, InputBitStream& inputStream);
 	void handlePacketFromNewClient(InputBitStream& inputStream, const SocketAddress& fromAddress);
 
+	int getNewNetworkId();
+
 	std::unordered_map<int, std::shared_ptr<ClientProxy>> playerIdToClient;
 	std::unordered_map<SocketAddress, std::shared_ptr<ClientProxy>> addressToClient;
 
 	int newPlayerIdCounter;
+	int newNetworkId;
 };
 
+inline std::shared_ptr<GameObject> NetworkManagerServer::registerAndReturn(GameObject* gameObject) {
+	std::shared_ptr<GameObject> newGameObject(gameObject);
+	registerGameObject(newGameObject);
+	return newGameObject;
+}

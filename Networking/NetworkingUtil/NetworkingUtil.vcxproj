@@ -165,20 +165,28 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AckRange.h" />
+    <ClInclude Include="BaseCharacter.h" />
+    <ClInclude Include="GameObject.h" />
+    <ClInclude Include="GameObjectRegistry.h" />
     <ClInclude Include="InFlightPacket.h" />
     <ClInclude Include="NetworkBitStream.h" />
     <ClInclude Include="NetworkManagerBase.h" />
     <ClInclude Include="PacketDeliveryNotificationManager.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="ReplicationCommand.h" />
     <ClInclude Include="SocketAddress.h" />
     <ClInclude Include="SocketAddressFactory.h" />
     <ClInclude Include="SocketUtil.h" />
     <ClInclude Include="Timing.h" />
     <ClInclude Include="TransmissionData.h" />
     <ClInclude Include="UDPSocket.h" />
+    <ClInclude Include="World.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AckRange.cpp" />
+    <ClCompile Include="BaseCharacter.cpp" />
+    <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="GameObjectRegistry.cpp" />
     <ClCompile Include="InFlightPacket.cpp" />
     <ClCompile Include="NetworkBitStream.cpp" />
     <ClCompile Include="NetworkManagerBase.cpp" />
@@ -196,6 +204,7 @@
     <ClCompile Include="SocketUtil.cpp" />
     <ClCompile Include="Timing.cpp" />
     <ClCompile Include="UDPSocket.cpp" />
+    <ClCompile Include="World.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

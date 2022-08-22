@@ -4,7 +4,7 @@
 
 NetworkManagerServer* NetworkManagerServer::Instance = nullptr;
 
-NetworkManagerServer::NetworkManagerServer() : newPlayerIdCounter(1) { }
+NetworkManagerServer::NetworkManagerServer() : newPlayerIdCounter(1), newNetworkId(1) { }
 
 bool NetworkManagerServer::staticInit(uint16_t inPort) {
 	if (Instance == nullptr) {
@@ -35,7 +35,6 @@ void NetworkManagerServer::processPacket(InputBitStream& inputStream, const Sock
 	}
 }
 
-
 void NetworkManagerServer::processPacket(std::shared_ptr<ClientProxy> clientProxy, InputBitStream& inputStream) {
 	std::cout << "SERVER DEBUG OUTPUT incoming packet  " << inputStream.getBufferPtr() << std::endl;
 
@@ -46,9 +45,10 @@ void NetworkManagerServer::processPacket(std::shared_ptr<ClientProxy> clientProx
 	switch (packetType) {
 	case helloMessage: {
 		// NOTE: This is temporary
-		if (clientProxy->getPacketDeliveryNotificationManager().readAndProcessWelcomePacket(inputStream)) {
-			sendWelcomePacket(clientProxy);
-		}
+		// if (clientProxy->getPacketDeliveryNotificationManager().readAndProcessWelcomePacket(inputStream)) {
+		//	sendWelcomePacket(clientProxy);
+		// }
+		sendWelcomePacket(clientProxy);
 		break;
 	}
 	default: {
@@ -63,14 +63,14 @@ void NetworkManagerServer::sendWelcomePacket(std::shared_ptr<ClientProxy> client
 
 	welcomePacket.write(welcomeMessage);
 
-	InFlightPacket* inFlightPacket = clientProxy->getPacketDeliveryNotificationManager().writeWelcomePacket(welcomePacket);
+	// InFlightPacket* inFlightPacket = clientProxy->getPacketDeliveryNotificationManager().writeWelcomePacket(welcomePacket);
 
 	welcomePacket.write(clientProxy->getPlayerId());
 
 	LOG("[NetworkManagerServer::sendWelcomePacket]: New client '%s' as player %d", clientProxy->getName().c_str(), clientProxy->getPlayerId());
 	std::cout << "[NetworkManagerServer::sendWelcomePacket]: New client " << clientProxy->getName().c_str() << " as player " << clientProxy->getPlayerId() << std::endl;
 
-	inFlightPacket->setTransmissionData(welcomeMessage, std::make_shared<ReliableWelcomeTransmissionData>(clientProxy));
+	// inFlightPacket->setTransmissionData(welcomeMessage, std::make_shared<ReliableWelcomeTransmissionData>(clientProxy));
 
 	sendPacket(welcomePacket, clientProxy->getSocketAddress());
 }
@@ -87,12 +87,10 @@ void NetworkManagerServer::handlePacketFromNewClient(InputBitStream& inputStream
 		addressToClient[fromAddress] = newClientProxy;
 		playerIdToClient[newClientProxy->getPlayerId()] = newClientProxy;
 
-		if (newClientProxy->getPacketDeliveryNotificationManager().readAndProcessWelcomePacket(inputStream)) {
-			sendWelcomePacket(newClientProxy);
-		}
-
+		// TODO: Spawn the characte for the client to control 
+		
+		sendWelcomePacket(newClientProxy);
 		// can spawn object for player like player controller, or whatever
-
 
 		// TODO: init replication manager
 	}
@@ -108,4 +106,26 @@ std::shared_ptr<ClientProxy> NetworkManagerServer::getClientProxy(int playerId) 
 	}
 
 	return nullptr;
+}
+
+int NetworkManagerServer::getNewNetworkId() {
+	int networkIdToReturn = newNetworkId++;
+
+	if (newNetworkId < networkIdToReturn) {
+		LOG("[NetworkManagerServer::getNewNetworkId] wrap around");
+		std::cout << "[NetworkManagerServer::getNewNetworkId] wrap around" << std::endl;
+	}
+
+	return networkIdToReturn;
+}
+
+void NetworkManagerServer::registerGameObject(std::shared_ptr<GameObject> gameObject) {
+	int newNetworkId = getNewNetworkId();
+	gameObject->setNetworkId(newNetworkId);
+
+	networkIdToGameObject[newNetworkId] = gameObject;
+
+	for (const auto& pair : addressToClient) {
+		pair.second->getReplicationManagerServer().replicateCreate(newNetworkId);
+	}
 }

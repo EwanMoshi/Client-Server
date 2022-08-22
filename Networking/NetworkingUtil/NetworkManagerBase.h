@@ -26,6 +26,8 @@ public:
 	static const uint32_t inputMessage = 'INPT';
 
 protected:
+	std::unordered_map<int, std::shared_ptr<GameObject>> networkIdToGameObject;
+
 	virtual float getPacketLossChance();
 
 private:

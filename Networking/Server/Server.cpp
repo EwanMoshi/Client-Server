@@ -2,6 +2,8 @@
 
 #include "pch.h"
 #include "Server.h"
+#include <GLFW/glfw3.h>
+#include "ServerCharacter.h"
 
 Server* Server::Instance = nullptr;
 
@@ -14,6 +16,8 @@ bool Server::staticInit() {
 }
 
 Server::Server() {
+	GameObjectRegistry::instance->registerCreationFunction('CHAR', ServerCharacter::staticCreate);
+
 	initNetworkManager();
 }
 
@@ -25,8 +29,31 @@ bool Server::initNetworkManager() {
 }
 
 int Server::run() {
-	while (true) {
+	GLFWwindow* window;
+
+	if (!glfwInit()) {
+		return -1;
+	}
+
+	window = glfwCreateWindow(640, 480, "Server", NULL, NULL);
+	if (!window) {
+		glfwTerminate();
+		return -1;
+	}
+
+	glfwMakeContextCurrent(window);
+	glfwSetKeyCallback(window, Server::keyCallback);
+
+	while (!glfwWindowShouldClose(window)) {
 		Timing::instance.Update();
+
+		processInputs(window);
+
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		glfwSwapBuffers(window);
+
+		glfwPollEvents();
 
 		// TODO: turn this into a getInstance function that initializes the Instance if it's nullptr
 		NetworkManagerServer::Instance->processIncomingPackets();
@@ -39,7 +66,22 @@ int Server::run() {
 		NetworkManagerServer::Instance->processTimedOutPackets();
 	}
 
+	glfwTerminate();
 	return 0;
+}
+
+void Server::processInputs(GLFWwindow* window) {
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+		glfwSetWindowShouldClose(window, true);
+	}
+}
+
+void Server::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	if (key == GLFW_KEY_1 && action == GLFW_PRESS)
+	{
+		std::cout << "aaaaaaaa" << std::endl;
+	}
 }
 
 int main()
