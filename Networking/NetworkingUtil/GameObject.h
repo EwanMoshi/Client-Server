@@ -11,7 +11,8 @@ public:
 	CLASS_IDENTIFICATION('GOBJ', GameObject)
 
 	GameObject();
-	virtual void update();
+	virtual void update(float deltaTime);
+	virtual void render();
 
 	void setNetworkId(int newNetworkId);
 	int getNetworkId() const;
@@ -22,6 +23,8 @@ public:
 	// TODO: add partial state rep using mask
 	virtual uint32_t write(OutputBitStream& outputStream) const;
 	virtual void read(InputBitStream& inputStream);
+
+	void setLocation(uint32_t x, uint32_t y);
 
 	uint32_t getX() const;
 	uint32_t getY() const;

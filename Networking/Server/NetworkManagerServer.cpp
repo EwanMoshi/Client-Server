@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "NetworkManagerServer.h"
 #include "ReliableWelcomeTransmissionData.h"
+#include "Server.h"
 
 NetworkManagerServer* NetworkManagerServer::Instance = nullptr;
 
@@ -87,8 +88,8 @@ void NetworkManagerServer::handlePacketFromNewClient(InputBitStream& inputStream
 		addressToClient[fromAddress] = newClientProxy;
 		playerIdToClient[newClientProxy->getPlayerId()] = newClientProxy;
 
-		// TODO: Spawn the characte for the client to control 
-		
+		Server::Instance->handleNewClient(newClientProxy->getPlayerId());
+
 		sendWelcomePacket(newClientProxy);
 		// can spawn object for player like player controller, or whatever
 

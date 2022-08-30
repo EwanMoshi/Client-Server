@@ -5,8 +5,12 @@ ClientCharacter::ClientCharacter() {
 
 }
 
-void ClientCharacter::update() {
+void ClientCharacter::update(float deltaTime) {
 
+}
+
+void ClientCharacter::render() {
+	std::cout << "[ClientCharacter::render]" << std::endl;
 }
 
 void ClientCharacter::read(InputBitStream& inputStream) {

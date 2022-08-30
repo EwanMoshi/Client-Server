@@ -12,13 +12,23 @@ enum class ReplicationAction {
 
 struct ReplicationCommand {
 public:
-	ReplicationCommand() {}
+	ReplicationCommand() : action(ReplicationAction::RA_Create) {}
 
 	// TODO: partial rep/dirty states
 	ReplicationCommand(uint32_t initialDirtyState) : action(ReplicationAction::RA_Create) {}
 
+	void handleCreateAckd() {
+		if (action == ReplicationAction::RA_Create) {
+			action = ReplicationAction::RA_Update;
+		}
+	}
+
 	void setDestroy() {
 		action = ReplicationAction::RA_Destroy;
+	}
+
+	ReplicationAction getAction() const {
+		return action;
 	}
 
 private:

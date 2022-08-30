@@ -9,7 +9,8 @@ public:
 		return NetworkManagerServer::Instance->registerAndReturn(new ServerCharacter());
 	}
 
-	virtual void update() override;
+	virtual void update(float deltaTime) override;
+	void render();
 
 protected:
 	ServerCharacter();

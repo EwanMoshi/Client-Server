@@ -48,3 +48,5 @@ const int SOCKET_ERROR = -1;
 #include "GameObjectRegistry.h"
 #include "GameObject.h"
 #include "BaseCharacter.h"
+#include "World.h"
+#include "glad/glad.h"

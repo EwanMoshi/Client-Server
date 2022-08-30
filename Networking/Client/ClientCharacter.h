@@ -9,7 +9,8 @@ public:
 		return std::shared_ptr<GameObject>(new ClientCharacter());
 	}
 
-	virtual void update() override;
+	virtual void update(float deltaTime) override;
+	void render() override;
 
 	virtual void read(InputBitStream& inputStream) override;
 

@@ -10,8 +10,17 @@ GameObject::GameObject() :
 
 }
 
-void GameObject::update() {
+void GameObject::update(float deltaTime) {
 
+}
+
+void GameObject::render() {
+	std::cout << "[GameObject::render]" << std::endl;
+}
+
+void GameObject::setLocation(uint32_t newX, uint32_t newY) {
+	x = newX;
+	y = newY;
 }
 
 void GameObject::setNetworkId(int newNetworkId) {
@@ -32,6 +41,7 @@ int GameObject::getIndexInWorld() const {
 }
 
 uint32_t GameObject::write(OutputBitStream& outputStream) const {
+	std::cout << "[GameObject::write]" << std::endl;
 	return 0;
 }
 

@@ -44,3 +44,4 @@ const int SOCKET_ERROR = -1;
 #include "NetworkManagerBase.h"
 #include "NetworkManagerServer.h"
 #include "ClientProxy.h"
+#include <glad/glad.h>

@@ -124,3 +124,13 @@ void NetworkManagerBase::sendPacket(const OutputBitStream& outputStream, const S
 float NetworkManagerBase::getPacketLossChance() {
 	return 0.0f;
 }
+
+std::shared_ptr<GameObject> NetworkManagerBase::getGameObject(int networkId) const {
+	auto gameObjectIterator = networkIdToGameObject.find(networkId);
+
+	if (gameObjectIterator != networkIdToGameObject.end()) {
+		return gameObjectIterator->second;
+	}
+
+	return nullptr;
+}

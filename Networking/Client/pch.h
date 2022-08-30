@@ -41,3 +41,4 @@ const int SOCKET_ERROR = -1;
 #include "SocketAddress.h"
 #include "NetworkManagerClient.h"
 #include "NetworkBitStream.h"
+#include <glad/glad.h>
