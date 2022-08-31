@@ -3,6 +3,7 @@
 #include <string.h>
 #include "NetworkManagerBase.h"
 #include "PacketDeliveryNotificationManager.h"
+#include "ReplicationManagerClient.h"
 
 class NetworkManagerClient : public NetworkManagerBase {
 	enum NetworkClientState {
@@ -19,6 +20,8 @@ public:
 	void sendOutgoingPackets();
 
 	void handleWelcomePacket(InputBitStream& inputStream);
+	void handleStatePacket(InputBitStream& inputStream);
+
 	virtual void processPacket(InputBitStream& inputStream, const SocketAddress& fromAddress) override;
 
 protected:
@@ -29,6 +32,7 @@ private:
 	void init(const SocketAddress& serverAddress, const std::string& name);
 
 	PacketDeliveryNotificationManager packetDeliveryNotificationManager;
+	ReplicationManagerClient replicationManager;
 
 	SocketAddress serverAddress;
 	NetworkClientState clientState;

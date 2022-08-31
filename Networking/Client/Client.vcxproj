@@ -170,6 +170,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="ReplicationManagerClient.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NetworkingUtil\NetworkingUtil.vcxproj">
@@ -181,6 +182,7 @@
     <ClInclude Include="ClientCharacter.h" />
     <ClInclude Include="NetworkManagerClient.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="ReplicationManagerClient.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

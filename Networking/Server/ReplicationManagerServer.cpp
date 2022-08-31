@@ -27,6 +27,7 @@ void ReplicationManagerServer::write(OutputBitStream& outputStream) {
 			writtenState = writeCreateAction(outputStream, networkId);
 			break;
 		case ReplicationAction::RA_Update:
+			writtenState = writeUpdateAction(outputStream, networkId);
 			break;
 		case ReplicationAction::RA_Destroy:
 			break;
@@ -43,7 +44,8 @@ uint32_t ReplicationManagerServer::writeCreateAction(OutputBitStream& outputStre
 }
 
 uint32_t ReplicationManagerServer::writeUpdateAction(OutputBitStream& outputStream, int networkId, uint32_t dirtyState) {
-	return 0;
+	std::shared_ptr<GameObject> gameObject = NetworkManagerServer::Instance->getGameObject(networkId);
+	return gameObject->write(outputStream);
 }
 
 uint32_t ReplicationManagerServer::writeDestroyAction(OutputBitStream& outputStream, int networkId, uint32_t dirtyState) {

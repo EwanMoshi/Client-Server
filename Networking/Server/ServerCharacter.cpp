@@ -14,7 +14,6 @@ void ServerCharacter::update(float deltaTime) {
 }
 
 void ServerCharacter::render() {
-	//std::cout << "[ServerCharacter::render]" << std::endl;
 	glUseProgram(shaderProgram);
 
 	glm::mat4 model = glm::mat4(1.0f);

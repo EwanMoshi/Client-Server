@@ -134,3 +134,7 @@ std::shared_ptr<GameObject> NetworkManagerBase::getGameObject(int networkId) con
 
 	return nullptr;
 }
+
+void NetworkManagerBase::addNetworkIdToGameObjectMap(std::shared_ptr<GameObject> newGameObject) {
+	networkIdToGameObject[newGameObject->getNetworkId()] = newGameObject;
+}

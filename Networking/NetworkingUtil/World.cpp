@@ -15,7 +15,10 @@ void World::addGameObject(std::shared_ptr<GameObject> gameObject) {
 }
 
 void World::update() {
-
+	for (const auto& go : gameObjects) {
+		// TODO: temp pass 0 for delta time
+		go->update(0);
+	}
 }
 
 int World::getIndexOfGameObject(std::shared_ptr<GameObject> gameObject)

@@ -32,13 +32,17 @@ void NetworkManagerClient::processPacket(InputBitStream& inputStream, const Sock
 	inputStream.read(packetType);
 
 	switch (packetType)	{
-	case welcomeMessage: {
-		//if (packetDeliveryNotificationManager.readAndProcessWelcomePacket(inputStream)) {
-		//	handleWelcomePacket(inputStream);
-		//}
-		handleWelcomePacket(inputStream);
-		break;
-	}
+		case welcomeMessage: {
+			//if (packetDeliveryNotificationManager.readAndProcessWelcomePacket(inputStream)) {
+			//	handleWelcomePacket(inputStream);
+			//}
+			handleWelcomePacket(inputStream);
+			break;
+		}
+		case stateMessage: {
+			handleStatePacket(inputStream);
+			break;
+		}
 	}
 }
 
@@ -90,6 +94,12 @@ void NetworkManagerClient::handleWelcomePacket(InputBitStream& inputStream) {
 		packetDeliveryNotificationManager.writeWelcomePacket(ackPacket);
 		sendPacket(ackPacket, serverAddress);
 		std::cout << "DEBUG OUTPUT ackPacket " << ackPacket.getBufferPtr() << std::endl;*/
+	}
+}
+
+void NetworkManagerClient::handleStatePacket(InputBitStream& inputStream) {
+	if (clientState == NCS_Welcomed) {
+		replicationManager.read(inputStream);
 	}
 }
 

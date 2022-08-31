@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-enum class ReplicationAction {
+enum class ReplicationAction : uint8_t {
 	RA_Create,
 	RA_Update,
 	RA_Destroy,

@@ -20,6 +20,8 @@ public:
 
 	virtual void processPacket(InputBitStream& inputStream, const SocketAddress& fromAddress) = 0;
 
+	void addNetworkIdToGameObjectMap(std::shared_ptr<GameObject> newGameObject);
+
 	std::shared_ptr<GameObject> getGameObject(int networkId) const;
 
 	static const uint32_t helloMessage = 'HELO';

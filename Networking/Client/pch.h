@@ -42,3 +42,4 @@ const int SOCKET_ERROR = -1;
 #include "NetworkManagerClient.h"
 #include "NetworkBitStream.h"
 #include <glad/glad.h>
+#include <ReplicationCommand.h>
