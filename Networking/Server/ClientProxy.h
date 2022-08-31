@@ -7,6 +7,9 @@ class ClientProxy {
 public:
 	ClientProxy(const SocketAddress& socketAddress, const std::string& name, int playerId);
 
+	bool isStateDirty() const;
+	void setStateDirty(bool isDirty);
+
 	const SocketAddress& getSocketAddress()	const { 
 		return socketAddress; 
 	}
@@ -28,5 +31,7 @@ private:
 	SocketAddress socketAddress;
 	std::string name;
 	int playerId;
+
+	bool stateDirty;
 };
 

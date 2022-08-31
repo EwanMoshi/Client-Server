@@ -18,6 +18,30 @@ bool NetworkManagerServer::staticInit(uint16_t inPort) {
 	return true;
 }
 
+void NetworkManagerServer::sendOutgoingPackets() {
+	for (const auto& iter : addressToClient) {
+		if (iter.second->isStateDirty()) {
+			std::cout << "[NetworkManagerServer::sendOutgoingPackets] State dirty. Sending state packet to client" << std::endl;
+			sendStatePacketToClient(iter.second);
+		}
+	}
+	//for (auto iter = addressToClient.begin(), end = addressToClient.end(); iter != end; ++iter) {
+	//	std::shared_ptr<ClientProxy> clientProxy = iter->second;
+	//	
+	//}
+}
+
+void NetworkManagerServer::sendStatePacketToClient(std::shared_ptr<ClientProxy> clientProxy) {
+	OutputBitStream statePacket;
+
+	statePacket.write(stateMessage);
+	clientProxy->getReplicationManagerServer().write(statePacket);
+	sendPacket(statePacket, clientProxy->getSocketAddress());
+
+	// now that state packet has been sent, we can mark state as not dirty
+	clientProxy->setStateDirty(false);
+}
+
 void NetworkManagerServer::processTimedOutPackets() {
 	for (const auto& pair : addressToClient) {
 		pair.second->getPacketDeliveryNotificationManager().processTimedOutPackets();
@@ -86,14 +110,15 @@ void NetworkManagerServer::handlePacketFromNewClient(InputBitStream& inputStream
 
 		auto newClientProxy = std::make_shared<ClientProxy>(fromAddress, name, newPlayerIdCounter++);
 		addressToClient[fromAddress] = newClientProxy;
-		playerIdToClient[newClientProxy->getPlayerId()] = newClientProxy;
+		playerIdToClientProxy[newClientProxy->getPlayerId()] = newClientProxy;
 
 		Server::Instance->handleNewClient(newClientProxy->getPlayerId());
 
 		sendWelcomePacket(newClientProxy);
-		// can spawn object for player like player controller, or whatever
 
-		// TODO: init replication manager
+		for (const auto& pair : networkIdToGameObject) {
+			newClientProxy->getReplicationManagerServer().replicateCreate(pair.first);
+		}
 	}
 	else {
 		LOG("[NetworkManagerServer::handlePacketFromNewClient]: Received packet from new client that isn't hello from socket address %s", fromAddress.toString().c_str());
@@ -101,8 +126,8 @@ void NetworkManagerServer::handlePacketFromNewClient(InputBitStream& inputStream
 }
 
 std::shared_ptr<ClientProxy> NetworkManagerServer::getClientProxy(int playerId) {
-	auto pair = playerIdToClient.find(playerId);
-	if (pair != playerIdToClient.end()) {
+	auto pair = playerIdToClientProxy.find(playerId);
+	if (pair != playerIdToClientProxy.end()) {
 		return pair->second;
 	}
 

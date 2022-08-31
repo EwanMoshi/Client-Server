@@ -14,6 +14,9 @@ public:
 
 	static bool staticInit(uint16_t port);
 
+	void sendOutgoingPackets();
+	void sendStatePacketToClient(std::shared_ptr<ClientProxy> clientProxy);
+
 	virtual void processPacket(InputBitStream& inputStream, const SocketAddress& fromAddress) override;
 
 	void sendWelcomePacket(std::shared_ptr<ClientProxy> clientProxy);
@@ -35,7 +38,7 @@ private:
 
 	int getNewNetworkId();
 
-	std::unordered_map<int, std::shared_ptr<ClientProxy>> playerIdToClient;
+	std::unordered_map<int, std::shared_ptr<ClientProxy>> playerIdToClientProxy;
 	std::unordered_map<SocketAddress, std::shared_ptr<ClientProxy>> addressToClient;
 
 	int newPlayerIdCounter;

@@ -5,9 +5,18 @@ ClientProxy::ClientProxy(const SocketAddress& socketAddress, const std::string& 
 	socketAddress(socketAddress),
 	name(name),
 	playerId(playerId),
-	packetDeliveryNotificationManager(false, true) // Note: We set shouldSendAcks to false because this is on the server
+	packetDeliveryNotificationManager(false, true), // Note: We set shouldSendAcks to false because this is on the server
+	stateDirty(true)
 {
 	
+}
+
+bool ClientProxy::isStateDirty() const {
+	return stateDirty;
+}
+
+void ClientProxy::setStateDirty(bool isDirty) {
+	stateDirty = isDirty;
 }
 
 ReplicationManagerServer& ClientProxy::getReplicationManagerServer()

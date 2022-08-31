@@ -80,7 +80,7 @@ int Server::run() {
 
 		// NetworkManagerServer::Instance->checkForDisconnects();
 
-		// NetworkManagerServer::Instance->sendOutgoingPackets();
+		NetworkManagerServer::Instance->sendOutgoingPackets();
 
 		// temp for testing
 		NetworkManagerServer::Instance->processTimedOutPackets();
