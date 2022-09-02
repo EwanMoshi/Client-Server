@@ -24,14 +24,14 @@ public:
 	virtual uint32_t write(OutputBitStream& outputStream) const;
 	virtual void read(InputBitStream& inputStream);
 
-	void setLocation(uint32_t x, uint32_t y);
+	void setLocation(float x, float y);
 
-	uint32_t getX() const;
-	uint32_t getY() const;
+	float getX() const;
+	float getY() const;
 
 private:
-	uint32_t x = 0;
-	uint32_t y = 0;
+	float x = 0;
+	float y = 0;
 	int networkId;
 
 	int indexInWorld;

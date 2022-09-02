@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "NetworkManagerClient.h"
+#include "Client.h"
 
 NetworkManagerClient* NetworkManagerClient::Instance = nullptr;
 
@@ -67,8 +68,7 @@ void NetworkManagerClient::sendOutgoingPackets() {
 			break;
 		}
 		case NCS_Welcomed: {
-			// send something else
-			int a = 5;
+			sendInputPacket();
 			break;
 		}
 	}
@@ -94,6 +94,29 @@ void NetworkManagerClient::handleWelcomePacket(InputBitStream& inputStream) {
 		packetDeliveryNotificationManager.writeWelcomePacket(ackPacket);
 		sendPacket(ackPacket, serverAddress);
 		std::cout << "DEBUG OUTPUT ackPacket " << ackPacket.getBufferPtr() << std::endl;*/
+	}
+}
+
+void NetworkManagerClient::sendInputPacket() {
+	MoveList& moveList = Client::Instance->getMoveList();
+
+	if (moveList.hasMoves()) {
+		std::cout << "[NetworkManagerClient::sendInputPacket] MoveList not empty, sending moves." << std::endl;
+
+		OutputBitStream inputPacket;
+		inputPacket.write(inputMessage);
+
+		// send last three moves
+		int moveCount = moveList.getMoveCount();
+		int startIndex = moveCount > 3 ? moveCount - 3 - 1 : 0;
+		inputPacket.write(moveCount - startIndex);
+		
+		for (int i = startIndex; i < moveCount; i++) {
+			moveList[i].write(inputPacket);
+		}
+
+		sendPacket(inputPacket, serverAddress);
+		moveList.clear();
 	}
 }
 

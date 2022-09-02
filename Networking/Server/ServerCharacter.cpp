@@ -10,7 +10,20 @@ ServerCharacter::ServerCharacter() {
 }
 
 void ServerCharacter::update(float deltaTime) {
-	std::cout << " Delta time = " << deltaTime << std::endl;
+	BaseCharacter::update(deltaTime);
+
+	std::shared_ptr<ClientProxy> clientProxy = NetworkManagerServer::Instance->getClientProxy(getPlayerId());
+	if (clientProxy) {
+		MoveList& moveList = clientProxy->getUnprocessedMoveList();
+		for (const auto& move : moveList) {
+			const InputState& state = move.getInputState();
+			float deltaTime = move.getDeltaTime();
+			processInput(state, deltaTime);
+			simulateMovement(deltaTime);
+		}
+
+		moveList.clear();
+	}
 }
 
 void ServerCharacter::render() {

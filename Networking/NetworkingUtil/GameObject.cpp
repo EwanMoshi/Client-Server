@@ -18,7 +18,7 @@ void GameObject::render() {
 	std::cout << "[GameObject::render]" << std::endl;
 }
 
-void GameObject::setLocation(uint32_t newX, uint32_t newY) {
+void GameObject::setLocation(float newX, float newY) {
 	x = newX;
 	y = newY;
 }
@@ -49,10 +49,10 @@ void GameObject::read(InputBitStream& inputStream) {
 
 }
 
-uint32_t GameObject::getX() const {
+float GameObject::getX() const {
 	return x;
 }
 
-uint32_t GameObject::getY() const {
+float GameObject::getY() const {
 	return y;
 }

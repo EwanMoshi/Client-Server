@@ -52,13 +52,38 @@ int Client::mainGameLoop() {
 		return -1;
 	}
 
+	// disable vsync
+	// glfwSwapInterval(0);
+
+	float updateAccumulator = 0.0f;
+	float packetSendAccumulator = 0.0f;
+
+	const double tickRate = 1.0 / 64.0;
+
+	// how often we send input packet to server in MS
+	const double packetTransmissionRate_MS = 1.0 / 20.0;
+
+	float timer = 0.0f;
+
 	while (!glfwWindowShouldClose(window)) {
 		Timing::instance.Update();
 
-		// simulate
-		World::instance->update();
+		processInputs(window, 0.0f, 0);
 
-		processInputs(window);
+		//std::cout << "Delta time = " << Timing::instance.GetDeltaTime() << std::endl;
+		//std::cout << "FPS = " << 1.0f / Timing::instance.GetDeltaTime() << std::endl;
+
+		float deltaTime = Timing::instance.GetDeltaTime();
+		updateAccumulator += deltaTime;
+		packetSendAccumulator += deltaTime;
+		timer += deltaTime;
+
+		// simulate
+		while (updateAccumulator >= tickRate) {
+			World::instance->update();
+			updateAccumulator -= tickRate;
+			std::cout << "simulate" << std::endl;
+		}
 
 		NetworkManagerClient::Instance->processIncomingPackets();
 
@@ -73,13 +98,20 @@ int Client::mainGameLoop() {
 
 		glfwPollEvents();
 
-		NetworkManagerClient::Instance->sendOutgoingPackets();
+		// send input packets
+		while (packetSendAccumulator >= packetTransmissionRate_MS) {
+			packetSendAccumulator -= packetTransmissionRate_MS;
+			NetworkManagerClient::Instance->sendOutgoingPackets();
+			std::cout << "sendOutgoingPackets" << std::endl;
+		}
+
+		frameCount++;
 	}
 
 	return 0;
 }
 
-void Client::processInputs(GLFWwindow* window) {
+void Client::processInputs(GLFWwindow* window, float timestamp, int frame) {
 	std::shared_ptr<GameObject> firstGameObject = nullptr;
 
 	if (!World::instance->getGameObjects().empty()) {
@@ -90,26 +122,22 @@ void Client::processInputs(GLFWwindow* window) {
 		glfwSetWindowShouldClose(window, true);
 	}
 
-	if (!firstGameObject) {
-		std::cout << "no object found" << std::endl;
-		return;
-	}
+	//if (!firstGameObject) {
+	//	std::cout << "no object found" << std::endl;
+	//	return;
+	//}
 
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-		firstGameObject->setLocation(firstGameObject->getX(), firstGameObject->getY() + 5);
-		std::cout << "WWWW" << std::endl;
+		moveList.addMove(InputState(1.0f, 0.0f, 0.0f, 0.0f), timestamp, frame);
 	}
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-		firstGameObject->setLocation(firstGameObject->getX() - 5, firstGameObject->getY());
-		std::cout << "AAAAAAA" << std::endl;
+		moveList.addMove(InputState(0.0f, 1.0f, 0.0f, 0.0f), timestamp, frame);
 	}
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-		std::cout << "SSSSSSSS" << std::endl;
-		firstGameObject->setLocation(firstGameObject->getX(), firstGameObject->getY() - 5);
+		moveList.addMove(InputState(0.0f, 0.0f, 1.0f, 0.0f), timestamp, frame);
 	}
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-		std::cout << "DDDD" << std::endl;
-		firstGameObject->setLocation(firstGameObject->getX() + 5, firstGameObject->getY());
+		moveList.addMove(InputState(0.0f, 0.0f, 0.0f, 1.0f), timestamp, frame);
 	}
 }
 

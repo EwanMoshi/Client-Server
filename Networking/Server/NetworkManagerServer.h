@@ -15,11 +15,12 @@ public:
 	static bool staticInit(uint16_t port);
 
 	void sendOutgoingPackets();
-	void sendStatePacketToClient(std::shared_ptr<ClientProxy> clientProxy);
+	void sendStatePacketToClient(const std::shared_ptr<ClientProxy>& clientProxy);
 
 	virtual void processPacket(InputBitStream& inputStream, const SocketAddress& fromAddress) override;
 
-	void sendWelcomePacket(std::shared_ptr<ClientProxy> clientProxy);
+	void sendWelcomePacket(const std::shared_ptr<ClientProxy>& clientProxy);
+	void handleInputPacket(const std::shared_ptr<ClientProxy>& clientProxy, InputBitStream& inputStream);
 
 	// TEMP: This is just here to test resending welcome packet
 	void processTimedOutPackets();

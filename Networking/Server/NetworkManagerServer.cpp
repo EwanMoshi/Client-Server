@@ -2,6 +2,7 @@
 #include "NetworkManagerServer.h"
 #include "ReliableWelcomeTransmissionData.h"
 #include "Server.h"
+#include <MoveList.h>
 
 NetworkManagerServer* NetworkManagerServer::Instance = nullptr;
 
@@ -31,7 +32,7 @@ void NetworkManagerServer::sendOutgoingPackets() {
 	//}
 }
 
-void NetworkManagerServer::sendStatePacketToClient(std::shared_ptr<ClientProxy> clientProxy) {
+void NetworkManagerServer::sendStatePacketToClient(const std::shared_ptr<ClientProxy>& clientProxy) {
 	OutputBitStream statePacket;
 
 	statePacket.write(stateMessage);
@@ -68,22 +69,27 @@ void NetworkManagerServer::processPacket(std::shared_ptr<ClientProxy> clientProx
 	std::cout << " -------    READING  " << packetType << std::endl;
 
 	switch (packetType) {
-	case helloMessage: {
-		// NOTE: This is temporary
-		// if (clientProxy->getPacketDeliveryNotificationManager().readAndProcessWelcomePacket(inputStream)) {
-		//	sendWelcomePacket(clientProxy);
-		// }
-		sendWelcomePacket(clientProxy);
-		break;
-	}
-	default: {
-		LOG("[NetworkManagerServer::processPacket]: Unknown packet type received from socket address %s", clientProxy->getSocketAddress().toString().c_str());
-		break;
-	}
+		case helloMessage: {
+			// NOTE: This is temporary
+			// if (clientProxy->getPacketDeliveryNotificationManager().readAndProcessWelcomePacket(inputStream)) {
+			//	sendWelcomePacket(clientProxy);
+			// }
+			sendWelcomePacket(clientProxy);
+			break;
+		}
+		case inputMessage: {
+			handleInputPacket(clientProxy, inputStream);
+			break;
+		}
+		default: {
+			std::cout << "[NetworkManagerServer::processPacket]: Unknown packet type received" << std::endl;
+			LOG("[NetworkManagerServer::processPacket]: Unknown packet type received from socket address %s", clientProxy->getSocketAddress().toString().c_str());
+			break;
+		}
 	}
 }
 
-void NetworkManagerServer::sendWelcomePacket(std::shared_ptr<ClientProxy> clientProxy) {
+void NetworkManagerServer::sendWelcomePacket(const std::shared_ptr<ClientProxy>& clientProxy) {
 	OutputBitStream welcomePacket;
 
 	welcomePacket.write(welcomeMessage);
@@ -122,6 +128,20 @@ void NetworkManagerServer::handlePacketFromNewClient(InputBitStream& inputStream
 	}
 	else {
 		LOG("[NetworkManagerServer::handlePacketFromNewClient]: Received packet from new client that isn't hello from socket address %s", fromAddress.toString().c_str());
+	}
+}
+
+void NetworkManagerServer::handleInputPacket(const std::shared_ptr<ClientProxy>& clientProxy, InputBitStream& inputStream) {
+	uint32_t moveCount = 0;
+	Move move;
+	inputStream.read(moveCount);
+	std::cout << "[NetworkManagerServer::handleInputPacket]: Move Count = " << moveCount << std::endl;
+
+	for (; moveCount > 0; moveCount--) {
+		if (move.read(inputStream)) {
+			clientProxy->getUnprocessedMoveList().addMove(move);
+			clientProxy->setStateDirty(true);
+		}
 	}
 }
 

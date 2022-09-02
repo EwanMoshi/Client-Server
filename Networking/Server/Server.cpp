@@ -56,16 +56,31 @@ int Server::run() {
 		return -1;
 	}
 
+	// 50 ms tick rate
+	const double tickRate = 1.0 / 20.0;
+	float accumulator = 0.0f;
+
 	while (!glfwWindowShouldClose(window)) {
 		Timing::instance.Update();
-	
-		// simulate
-		World::instance->update();
+		
+		accumulator += Timing::instance.GetDeltaTime();
 
-		// NOTE: This is temporary, server won't have processInputs
-		processInputs(window);
+		while (accumulator >= tickRate) {
+			World::instance->update();
+			accumulator -= tickRate;
 
-		NetworkManagerServer::Instance->processIncomingPackets();
+			// NOTE: This is temporary, server won't have processInputs
+			//processInputs(window);
+
+			NetworkManagerServer::Instance->processIncomingPackets();
+
+			// NetworkManagerServer::Instance->checkForDisconnects();
+
+			NetworkManagerServer::Instance->sendOutgoingPackets();
+
+			// temp for testing
+			NetworkManagerServer::Instance->processTimedOutPackets();
+		}
 
 		// render
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -77,13 +92,6 @@ int Server::run() {
 		glfwSwapBuffers(window);
 
 		glfwPollEvents();
-
-		// NetworkManagerServer::Instance->checkForDisconnects();
-
-		NetworkManagerServer::Instance->sendOutgoingPackets();
-
-		// temp for testing
-		NetworkManagerServer::Instance->processTimedOutPackets();
 	}
 
 	glfwTerminate();
@@ -102,22 +110,6 @@ void Server::spawnCharacterForPlayer(int playerId) {
 void Server::processInputs(GLFWwindow* window) {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 		glfwSetWindowShouldClose(window, true);
-	}
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-		auto firstGameObject = World::instance->getGameObjects()[0];
-		firstGameObject->setLocation(firstGameObject->getX(), firstGameObject->getY() + 5);
-	}
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-		auto firstGameObject = World::instance->getGameObjects()[0];
-		firstGameObject->setLocation(firstGameObject->getX() - 5, firstGameObject->getY());
-	}
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-		auto firstGameObject = World::instance->getGameObjects()[0];
-		firstGameObject->setLocation(firstGameObject->getX(), firstGameObject->getY() - 5);
-	}
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-		auto firstGameObject = World::instance->getGameObjects()[0];
-		firstGameObject->setLocation(firstGameObject->getX() + 5, firstGameObject->getY());
 	}
 }
 

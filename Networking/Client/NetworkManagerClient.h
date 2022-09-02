@@ -18,6 +18,7 @@ public:
 	static void	staticInit(const SocketAddress& serverAddress, const std::string& name);
 
 	void sendOutgoingPackets();
+	void sendInputPacket();
 
 	void handleWelcomePacket(InputBitStream& inputStream);
 	void handleStatePacket(InputBitStream& inputStream);

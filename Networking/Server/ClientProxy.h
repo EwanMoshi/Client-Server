@@ -2,6 +2,7 @@
 
 #include "PacketDeliveryNotificationManager.h"
 #include "ReplicationManagerServer.h"
+#include <MoveList.h>
 
 class ClientProxy {
 public:
@@ -22,6 +23,8 @@ public:
 		return name; 
 	}
 
+	MoveList& getUnprocessedMoveList();
+
 	ReplicationManagerServer& getReplicationManagerServer();
 	PacketDeliveryNotificationManager& getPacketDeliveryNotificationManager();
 
@@ -32,6 +35,7 @@ private:
 	std::string name;
 	int playerId;
 
+	MoveList unprocessedMoves;
 	bool stateDirty;
 };
 

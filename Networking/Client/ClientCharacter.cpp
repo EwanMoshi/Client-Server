@@ -14,7 +14,6 @@ void ClientCharacter::update(float deltaTime) {
 }
 
 void ClientCharacter::render() {
-	std::cout << "[ClientCharacter::render]" << std::endl;
 	glUseProgram(shaderProgram);
 
 	glm::mat4 model = glm::mat4(1.0f);
@@ -49,7 +48,7 @@ void ClientCharacter::read(InputBitStream& inputStream) {
 	setPlayerId(playerId);
 	std::cout << "Read player ID " << playerId << std::endl;
 
-	uint32_t x, y;
+	float x, y;
 	inputStream.read(x);
 	inputStream.read(y);
 	std::cout << "Read x = " << x << " and y = " << y << std::endl;

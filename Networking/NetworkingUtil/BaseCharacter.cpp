@@ -18,7 +18,7 @@ const char* fragmentShaderSource = "#version 330 core\n"
 "   FragColor = vec4(1.0f, 1.0f, 0.0f, 1.0f);\n"
 "}\n\0";
 
-BaseCharacter::BaseCharacter() : playerId(0) {
+BaseCharacter::BaseCharacter() : playerId(0), movementSpeed(1) {
 	std::cout << "[BaseCharacter::BaseCharacter]" << std::endl;
 
 	// vertex shader
@@ -79,6 +79,29 @@ BaseCharacter::~BaseCharacter() {
 	glDeleteBuffers(1, &VBO);
 	glDeleteBuffers(1, &EBO);
 	glDeleteProgram(shaderProgram);
+}
+
+void BaseCharacter::processInput(const InputState& inputState, float deltaTime) {
+	moveDirHorizontal = inputState.getHorizontalDelta();
+	moveDirVertical = inputState.getVerticalDelta();
+
+	std::cout << "[BaseCharacter::processInput] horizontalDelta = " << moveDirHorizontal << std::endl;
+	std::cout << "[BaseCharacter::processInput] verticalDelta = " << moveDirVertical << std::endl;
+}
+
+void BaseCharacter::simulateMovement(float deltaTime) {
+	//firstGameObject->setLocation(firstGameObject->getX() - 5, firstGameObject->getY());
+	 // TODO: use  deltaTime
+	float newX = getX() + moveDirHorizontal * movementSpeed;
+	float newY = getY() + moveDirVertical * movementSpeed;
+
+	std::cout << "[BaseCharacter::simulateMovement] newX = " << newX << std::endl;
+	std::cout << "[BaseCharacter::simulateMovement] newY = " << newY << std::endl;
+	setLocation(newX, newY);
+}
+
+unsigned int BaseCharacter::getPlayerId() {
+	return playerId;
 }
 
 void BaseCharacter::setPlayerId(uint32_t newPlayerId) {

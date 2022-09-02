@@ -169,6 +169,7 @@
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameObjectRegistry.h" />
     <ClInclude Include="InFlightPacket.h" />
+    <ClInclude Include="MoveList.h" />
     <ClInclude Include="NetworkBitStream.h" />
     <ClInclude Include="NetworkManagerBase.h" />
     <ClInclude Include="PacketDeliveryNotificationManager.h" />
@@ -192,6 +193,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="InFlightPacket.cpp" />
+    <ClCompile Include="MoveList.cpp" />
     <ClCompile Include="NetworkBitStream.cpp" />
     <ClCompile Include="NetworkManagerBase.cpp" />
     <ClCompile Include="PacketDeliveryNotificationManager.cpp" />

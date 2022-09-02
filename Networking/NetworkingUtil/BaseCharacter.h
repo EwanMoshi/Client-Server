@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameObject.h"
+#include "MoveList.h"
 
 class BaseCharacter : public GameObject
 {
@@ -14,6 +15,10 @@ public:
 		return new BaseCharacter();
 	}
 
+	void processInput(const InputState& inputState, float deltaTime);
+	void simulateMovement(float deltaTime);
+
+	unsigned int getPlayerId();
 	void setPlayerId(uint32_t newPlayerId);
 
 	virtual uint32_t write(OutputBitStream& outputStream) const override;
@@ -21,10 +26,16 @@ public:
 protected:
 	BaseCharacter();
 
+	// rendering
 	unsigned int VBO;
 	unsigned int VAO;
 	unsigned int EBO;
 	unsigned int shaderProgram;
+
+	// movement
+	float movementSpeed;
+	float moveDirHorizontal;
+	float moveDirVertical;
 
 private:
 	uint32_t playerId;

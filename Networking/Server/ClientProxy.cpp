@@ -27,3 +27,7 @@ ReplicationManagerServer& ClientProxy::getReplicationManagerServer()
 PacketDeliveryNotificationManager& ClientProxy::getPacketDeliveryNotificationManager() {
 	return packetDeliveryNotificationManager;
 }
+
+MoveList& ClientProxy::getUnprocessedMoveList() {
+	return unprocessedMoves;
+}
