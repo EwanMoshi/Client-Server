@@ -2,7 +2,9 @@
 #include "NetworkManagerBase.h"
 #include "SocketAddress.h"
 #include "UDPSocket.h"
+#include "../Client/Client.h"
 
+float NetworkManagerBase::simulatedLatency_SEC = 0.0f;
 
 float Math::GetRandomFloat() {
 	static std::random_device randomDevice;
@@ -12,9 +14,10 @@ float Math::GetRandomFloat() {
 }
 
 
-NetworkManagerBase::ReceivedPacket::ReceivedPacket(InputBitStream& inputBitStream, const SocketAddress& fromAddress) :
+NetworkManagerBase::ReceivedPacket::ReceivedPacket(InputBitStream& inputBitStream, const SocketAddress& fromAddress, float receivedTime) :
 	fromAddress(fromAddress),
-	packetBuffer(inputBitStream)
+	packetBuffer(inputBitStream),
+	receivedTime(receivedTime)
 {
 }
 
@@ -92,7 +95,10 @@ void NetworkManagerBase::readIncomingPacketsIntoQueue() {
 			// Note: can simulate lag/packet loss here by not inserting into queue
 			if (randFloat >= getPacketLossChance()) {
 				std::cout << "[NetworkManagerBase::readIncomingPacketsIntoQueue]: Placing packet into packet queue" << std::endl;
-				packetQueue.emplace(inputStream, fromAddress);
+				std::cout << "[NetworkManagerBase::readIncomingPacketsIntoQueue]: --------------------------------- " << simulatedLatency_SEC  << std::endl;
+
+				float receivedTime = Timing::instance.GetTimeAsFloat() + simulatedLatency_SEC;
+				packetQueue.emplace(inputStream, fromAddress, receivedTime);
 			}
 			else {
 				std::cout << "[NetworkManagerBase::readIncomingPacketsIntoQueue]: Simulating packet loss - Dropping packet " << std::endl;
@@ -105,8 +111,18 @@ void NetworkManagerBase::processQueuedPackets() {
 	while (!packetQueue.empty()) {
 		ReceivedPacket& nextPacket = packetQueue.front();
 
-		processPacket(nextPacket.getPacketBuffer(), nextPacket.getFromAddress());
-		packetQueue.pop();
+		std::cout << "simulated time ===== " << Timing::instance.GetTimeAsFloat() << std::endl;
+		std::cout << "received time ===== " << nextPacket.getReceivedTime() << std::endl;
+
+		// simulate latency
+		if (Timing::instance.GetTimeAsFloat() > nextPacket.getReceivedTime()) {
+			processPacket(nextPacket.getPacketBuffer(), nextPacket.getFromAddress());
+			packetQueue.pop();
+		}
+		else {
+			std::cout << "[NetworkManagerBase::processQueuedPackets]: Simulating lag - will not process packet right away" << std::endl;
+			break;
+		}
 	}
 }
 

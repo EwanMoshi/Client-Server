@@ -29,6 +29,8 @@ public:
 	static const uint32_t stateMessage = 'STAT';
 	static const uint32_t inputMessage = 'INPT';
 
+	static float simulatedLatency_SEC;
+
 protected:
 	std::unordered_map<int, std::shared_ptr<GameObject>> networkIdToGameObject;
 
@@ -37,7 +39,7 @@ protected:
 private:
 	class ReceivedPacket {
 	public:
-		ReceivedPacket(InputBitStream& inputMemoryBitStream, const SocketAddress& address);
+		ReceivedPacket(InputBitStream& inputMemoryBitStream, const SocketAddress& address, float receivedTime);
 
 		const SocketAddress& getFromAddress() const {
 			return fromAddress;
@@ -47,9 +49,14 @@ private:
 			return packetBuffer;
 		}
 
+		float getReceivedTime() const {
+			return receivedTime;
+		}
+
 	private:
 		InputBitStream packetBuffer;
 		SocketAddress fromAddress;
+		float receivedTime;
 	};
 
 	void readIncomingPacketsIntoQueue();
@@ -58,5 +65,6 @@ private:
 	std::shared_ptr<class UDPSocket> udpSocket;
 
 	std::queue<ReceivedPacket, std::list<ReceivedPacket>> packetQueue;
+
 };
 

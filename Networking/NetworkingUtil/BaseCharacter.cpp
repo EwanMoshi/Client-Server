@@ -18,7 +18,7 @@ const char* fragmentShaderSource = "#version 330 core\n"
 "   FragColor = vec4(1.0f, 1.0f, 0.0f, 1.0f);\n"
 "}\n\0";
 
-BaseCharacter::BaseCharacter() : playerId(0), movementSpeed(1) {
+BaseCharacter::BaseCharacter() : playerId(0), movementSpeed(5) {
 	std::cout << "[BaseCharacter::BaseCharacter]" << std::endl;
 
 	// vertex shader
@@ -92,6 +92,7 @@ void BaseCharacter::processInput(const InputState& inputState, float deltaTime) 
 void BaseCharacter::simulateMovement(float deltaTime) {
 	//firstGameObject->setLocation(firstGameObject->getX() - 5, firstGameObject->getY());
 	 // TODO: use  deltaTime
+	std::cout << "[BaseCharacter::simulateMovement] aaaaaaaaaaaaaaaaaaa = " << movementSpeed << std::endl;
 	float newX = getX() + moveDirHorizontal * movementSpeed;
 	float newY = getY() + moveDirVertical * movementSpeed;
 

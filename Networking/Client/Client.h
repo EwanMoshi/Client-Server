@@ -14,7 +14,7 @@ public:
 
 private:
 	Client();
-	void processInputs(class GLFWwindow* window, float timestamp, int frame);
+	void processInputs(struct GLFWwindow* window, float timestamp, int frame);
 	static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 	int frameCount = 0;

@@ -14,6 +14,7 @@ class NetworkManagerClient : public NetworkManagerBase {
 
 public:
 	static NetworkManagerClient* Instance;
+	static float simulatedPacketLoss;
 
 	static void	staticInit(const SocketAddress& serverAddress, const std::string& name);
 

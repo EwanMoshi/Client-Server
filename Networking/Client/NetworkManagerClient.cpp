@@ -4,6 +4,8 @@
 
 NetworkManagerClient* NetworkManagerClient::Instance = nullptr;
 
+float NetworkManagerClient::simulatedPacketLoss = 0.0f;
+
 NetworkManagerClient::NetworkManagerClient() :
 	clientState(NCS_Uninitialized),
 	helloPacketSent(false),
@@ -127,5 +129,5 @@ void NetworkManagerClient::handleStatePacket(InputBitStream& inputStream) {
 }
 
 float NetworkManagerClient::getPacketLossChance() {
-	return 0.0f;
+	return NetworkManagerClient::simulatedPacketLoss;
 }
