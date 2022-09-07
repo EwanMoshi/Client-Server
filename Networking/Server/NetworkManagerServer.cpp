@@ -49,7 +49,7 @@ void NetworkManagerServer::sendStatePacketToClient(const std::shared_ptr<ClientP
 	// RPCH = Replication Character
 	// TODO: Maybe change RPCH to stateMessage 
 	inFlightPacket->setTransmissionData('RPCH', reliableCharacterTransmissionData);
-
+	
 	sendPacket(statePacket, clientProxy->getSocketAddress());
 
 	// now that state packet has been sent, we can mark state as not dirty

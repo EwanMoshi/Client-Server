@@ -12,11 +12,11 @@ void PacketDeliveryNotificationManager::processTimedOutPackets() {
 	float timeoutTime = Timing::instance.GetTimeAsFloat() - packetAckTimeoutDelay_Sec;
 
 	while (!inFlightPackets.empty()) {
-		const InFlightPacket inFlightPacket = inFlightPackets.front();
+		const InFlightPacket inFlightPacketCopy = inFlightPackets.front();
 
-		if (inFlightPacket.getTimeDispatched() < timeoutTime) {
-			handlePacketDeliveryFailure(inFlightPacket);
+		if (inFlightPacketCopy.getTimeDispatched() < timeoutTime) {
 			inFlightPackets.pop_front();
+			handlePacketDeliveryFailure(inFlightPacketCopy);
 		}
 		else {
 			// because inFlightsPackets are ordered, we can break as soon as we hit the first packet that hasn't timed out
