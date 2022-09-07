@@ -16,6 +16,13 @@ public:
 
 	InFlightPacket* writeWelcomePacket(OutputBitStream& outputStream);
 	bool readAndProcessWelcomePacket(InputBitStream& inputStream);
+	
+	InFlightPacket* writeStatePacket(OutputBitStream& statePacket);
+	bool readAndProcessStatePacket(InputBitStream& inputStream);
+
+	const std::deque<InFlightPacket>& getInFlightPackets() const;
+
+	bool needsToAck() const;
 
 private:
 	void handlePacketDeliverySuccess(const InFlightPacket& inFlightPacket);
@@ -36,5 +43,5 @@ private:
 	std::deque<InFlightPacket> inFlightPackets;
 	std::deque<AckRange> pendingAckRanges;
 
-	const float packetAckTimeoutDelay = 3.0f;
+	const float packetAckTimeoutDelay_Sec = 3.0f;
 };

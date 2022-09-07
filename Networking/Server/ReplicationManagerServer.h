@@ -7,7 +7,9 @@ public:
 	void replicateCreate(int networkId);
 	void replicateDestroy(int networkId);
 
-	void write(OutputBitStream& outputStream);
+	void write(OutputBitStream& outputStream, const std::shared_ptr<TransmissionData>& transmissionData);
+
+	void handleCreateAckd(int networkId);
 private:
 	uint32_t writeCreateAction(OutputBitStream& outputStream, int networkId, uint32_t dirtyState = 0);
 	uint32_t writeUpdateAction(OutputBitStream& outputStream, int networkId, uint32_t dirtyState = 0);

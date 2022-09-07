@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "NetworkManagerServer.h"
+#include "ReliableCharacterTransmissionData.h"
 #include "ReliableWelcomeTransmissionData.h"
 #include "Server.h"
 #include <MoveList.h>
@@ -36,7 +37,19 @@ void NetworkManagerServer::sendStatePacketToClient(const std::shared_ptr<ClientP
 	OutputBitStream statePacket;
 
 	statePacket.write(stateMessage);
-	clientProxy->getReplicationManagerServer().write(statePacket);
+
+	InFlightPacket* inFlightPacket = clientProxy->getPacketDeliveryNotificationManager().writeStatePacket(statePacket);
+
+	std::shared_ptr<ReliableCharacterTransmissionData> reliableCharacterTransmissionData =
+		std::make_shared<ReliableCharacterTransmissionData>(&clientProxy->getReplicationManagerServer(), clientProxy);
+
+	
+	clientProxy->getReplicationManagerServer().write(statePacket, reliableCharacterTransmissionData);
+
+	// RPCH = Replication Character
+	// TODO: Maybe change RPCH to stateMessage 
+	inFlightPacket->setTransmissionData('RPCH', reliableCharacterTransmissionData);
+
 	sendPacket(statePacket, clientProxy->getSocketAddress());
 
 	// now that state packet has been sent, we can mark state as not dirty
@@ -78,7 +91,9 @@ void NetworkManagerServer::processPacket(std::shared_ptr<ClientProxy> clientProx
 			break;
 		}
 		case inputMessage: {
-			handleInputPacket(clientProxy, inputStream);
+			if (clientProxy->getPacketDeliveryNotificationManager().readAndProcessStatePacket(inputStream)) {
+				handleInputPacket(clientProxy, inputStream);
+			}
 			break;
 		}
 		default: {

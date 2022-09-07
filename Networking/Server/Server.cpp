@@ -79,6 +79,7 @@ int Server::run() {
 			NetworkManagerServer::Instance->sendOutgoingPackets();
 
 			// temp for testing
+			// TODO: Remove later
 			NetworkManagerServer::Instance->processTimedOutPackets();
 		}
 

@@ -181,6 +181,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
     </ClCompile>
+    <ClCompile Include="ReliableCharacterTransmissionData.cpp" />
     <ClCompile Include="ReliableWelcomeTransmissionData.cpp" />
     <ClCompile Include="ReplicationManagerServer.cpp" />
     <ClCompile Include="Server.cpp">
@@ -195,6 +196,7 @@
     <ClInclude Include="ClientProxy.h" />
     <ClInclude Include="NetworkManagerServer.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="ReliableCharacterTransmissionData.h" />
     <ClInclude Include="ReliableWelcomeTransmissionData.h" />
     <ClInclude Include="ReplicationManagerServer.h" />
     <ClInclude Include="Server.h" />

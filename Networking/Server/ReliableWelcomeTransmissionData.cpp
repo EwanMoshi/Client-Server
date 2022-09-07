@@ -13,5 +13,5 @@ void ReliableWelcomeTransmissionData::handleDeliverySuccess(PacketDeliveryNotifi
 
 void ReliableWelcomeTransmissionData::handleDeliveryFailure(PacketDeliveryNotificationManager* packetDeliveryNotificationManager) const {
 	std::cout << "[ReliableWelcomeTransmissionData::handleDeliveryFailure]: Attempting to resend packet" << std::endl;
-	NetworkManagerServer::Instance->sendWelcomePacket(std::move(clientProxy));
+	//NetworkManagerServer::Instance->sendWelcomePacket(std::move(clientProxy));
 }

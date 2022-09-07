@@ -9,7 +9,11 @@ void ReplicationManagerServer::replicateDestroy(int networkId) {
 	networkIdtoReplicationCommand[networkId].setDestroy();
 }
 
-void ReplicationManagerServer::write(OutputBitStream& outputStream) {
+void ReplicationManagerServer::handleCreateAckd(int networkId) {
+	networkIdtoReplicationCommand[networkId].handleCreateAckd();
+}
+
+void ReplicationManagerServer::write(OutputBitStream& outputStream, const std::shared_ptr<TransmissionData>& transmissionData) {
 	for (auto& pair : networkIdtoReplicationCommand) {
 		ReplicationCommand& repCommand = pair.second;
 
@@ -32,6 +36,8 @@ void ReplicationManagerServer::write(OutputBitStream& outputStream) {
 		case ReplicationAction::RA_Destroy:
 			break;
 		}
+
+		transmissionData->addTransmission(networkId, action);
 	}
 }
 

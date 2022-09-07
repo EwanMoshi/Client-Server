@@ -1,7 +1,10 @@
 #include "pch.h"
 #include "InFlightPacket.h"
 
-InFlightPacket::InFlightPacket(PacketSequenceNumber sequenceNumber) : sequenceNumber(sequenceNumber), timeDispatched(Timing::instance.GetTimeAsFloat()) { }
+InFlightPacket::InFlightPacket(PacketSequenceNumber sequenceNumber) 
+	: sequenceNumber(sequenceNumber), timeDispatched(Timing::instance.GetTimeAsFloat()) { 
+
+}
 
 void InFlightPacket::setTransmissionData(int key, std::shared_ptr<TransmissionData> transmissionData) {
 	this->transmissionData[key] = transmissionData;

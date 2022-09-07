@@ -88,9 +88,6 @@ int Client::mainGameLoop() {
 
 		processInputs(window, 0.0f, 0);
 
-		//std::cout << "Delta time = " << Timing::instance.GetDeltaTime() << std::endl;
-		//std::cout << "FPS = " << 1.0f / Timing::instance.GetDeltaTime() << std::endl;
-
 		float deltaTime = Timing::instance.GetDeltaTime();
 		updateAccumulator += deltaTime;
 		packetSendAccumulator += deltaTime;
@@ -106,7 +103,7 @@ int Client::mainGameLoop() {
 		while (updateAccumulator >= tickRate) {
 			World::instance->update();
 			updateAccumulator -= tickRate;
-			std::cout << "simulate" << std::endl;
+			//std::cout << "simulate" << std::endl;
 		}
 
 		NetworkManagerClient::Instance->processIncomingPackets();
@@ -127,7 +124,7 @@ int Client::mainGameLoop() {
 			ImGui::SliderFloat("Transmission Rate (ms)", &packetTransmissionRate_MS, (1.0f / 20.0f) * 1000.0f, 1000.0f);
 
 			ImGui::Text("Sending %.3f input packets per second", 1000.0f / packetTransmissionRate_MS);
-			ImGui::Text("Current ping (ms) %.3f", NetworkManagerBase::simulatedLatency_SEC);
+			ImGui::Text("Current ping (ms) %.0f", NetworkManagerBase::simulatedLatency_SEC * 1000.0f);
 			ImGui::Text("Packet loss %.0f%%", NetworkManagerClient::simulatedPacketLoss * 100.0f);
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 			ImGui::End();
@@ -144,7 +141,7 @@ int Client::mainGameLoop() {
 			c++;
 			packetSendAccumulator -= packetTransmissionRate_MS / 1000.0f;
 			NetworkManagerClient::Instance->sendOutgoingPackets();
-			std::cout << "sendOutgoingPackets" << std::endl;
+			//std::cout << "sendOutgoingPackets" << std::endl;
 		}
 
 		frameCount++;
@@ -167,11 +164,6 @@ void Client::processInputs(GLFWwindow* window, float timestamp, int frame) {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 		glfwSetWindowShouldClose(window, true);
 	}
-
-	//if (!firstGameObject) {
-	//	std::cout << "no object found" << std::endl;
-	//	return;
-	//}
 
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
 		moveList.addMove(InputState(1.0f, 0.0f, 0.0f, 0.0f), timestamp, frame);

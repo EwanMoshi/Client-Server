@@ -43,7 +43,9 @@ void NetworkManagerClient::processPacket(InputBitStream& inputStream, const Sock
 			break;
 		}
 		case stateMessage: {
-			handleStatePacket(inputStream);
+			if (packetDeliveryNotificationManager.readAndProcessStatePacket(inputStream)) {
+				handleStatePacket(inputStream);
+			}
 			break;
 		}
 	}
@@ -102,11 +104,13 @@ void NetworkManagerClient::handleWelcomePacket(InputBitStream& inputStream) {
 void NetworkManagerClient::sendInputPacket() {
 	MoveList& moveList = Client::Instance->getMoveList();
 
-	if (moveList.hasMoves()) {
-		std::cout << "[NetworkManagerClient::sendInputPacket] MoveList not empty, sending moves." << std::endl;
+	if (moveList.hasMoves() || packetDeliveryNotificationManager.needsToAck()) {
+		std::cout << "[NetworkManagerClient::sendInputPacket] MoveList not empty or we have a pending ack. Sending moves." << std::endl;
 
 		OutputBitStream inputPacket;
 		inputPacket.write(inputMessage);
+
+		packetDeliveryNotificationManager.writeStatePacket(inputPacket);
 
 		// send last three moves
 		int moveCount = moveList.getMoveCount();
