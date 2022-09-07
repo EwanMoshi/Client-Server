@@ -48,7 +48,7 @@ void NetworkManagerServer::sendStatePacketToClient(const std::shared_ptr<ClientP
 
 	// RPCH = Replication Character
 	// TODO: Maybe change RPCH to stateMessage 
-	inFlightPacket->setTransmissionData('RPCH', reliableCharacterTransmissionData);
+	inFlightPacket->setTransmissionData(stateMessage, reliableCharacterTransmissionData);
 	
 	sendPacket(statePacket, clientProxy->getSocketAddress());
 

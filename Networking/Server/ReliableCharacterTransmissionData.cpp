@@ -73,7 +73,7 @@ void ReliableCharacterTransmissionData::handleUpdateDeliveryFailure(int networkI
 		for (const auto& inflightPacket : packetDeliveryNotificationManager->getInFlightPackets()) {
 			
 			std::shared_ptr<ReliableCharacterTransmissionData> reliableCharacterTransmissionData = 
-				std::static_pointer_cast<ReliableCharacterTransmissionData>(inflightPacket.getTransmissionData('RPCH'));
+				std::static_pointer_cast<ReliableCharacterTransmissionData>(inflightPacket.getTransmissionData(NetworkManagerServer::Instance->stateMessage));
 
 			// if there already exists a packet for this networkId then don't bother resending because we know another update is in flight
 			for (const CharacterReplicationTransmission& characterReplicationTransmission : reliableCharacterTransmissionData->transmissions) {
